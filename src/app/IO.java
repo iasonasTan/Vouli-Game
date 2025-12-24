@@ -15,7 +15,7 @@ public final class IO {
 
     public static void init() {
         Path systemConfigDir;
-        String osName = System.getProperty("os.name");
+        String osName = System.getProperty("os.name").toLowerCase();
         String userHome = System.getProperty("user.home");
         if(osName.contains("win")) {
             systemConfigDir = Paths.get(System.getenv("APPDATA"));
