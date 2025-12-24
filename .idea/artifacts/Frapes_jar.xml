@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Frapes:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Frapes_jar</output-path>
+    <root id="archive" name="Frapes.jar">
+      <element id="module-output" name="Frapes" />
+      <element id="module-source" name="Frapes" />
+    </root>
+  </artifact>
+</component>

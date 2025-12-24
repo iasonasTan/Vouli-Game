@@ -1,0 +1,9 @@
+font_family=/menu/fonts/ibm_plex_serif_bold.ttf
+font_size=17
+
+background=128,160,119
+foreground=255,255,255
+
+focusable=false
+size=250x40
+alignment=center

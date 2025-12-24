@@ -1,0 +1,42 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 1.8
+
+      - name: Compile Java
+        run: |
+          mkdir out
+          javac -encoding UTF-8 -d out src/**/*.java
+
+      - name: Create JAR
+        run:
+          |
+          jar -cfe Game.jar app.Main -C out .
+
+      - name: Create EXE with jpackage
+        run: |
+          jpackage ^
+            --input . ^
+            --name Game ^
+            --main-jar Game.jar ^
+            --type exe
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: GameEXE
+          path: Game
