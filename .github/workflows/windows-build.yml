@@ -20,7 +20,7 @@ jobs:
       - name: Compile Java
         run: |
           mkdir out
-          javac -encoding UTF-8 -d out src/**/*.java
+          javac -encoding UTF-8 -d out src/app/Main.java
 
       - name: Create JAR
         run:
