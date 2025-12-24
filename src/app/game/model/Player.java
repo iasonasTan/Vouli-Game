@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.sound.sampled.Clip;
 
@@ -81,7 +82,8 @@ public final class Player extends DamageableModel {
                 case KeyEvent.VK_S: addVelocity(new Vector2(0, +2)); break;
                 case KeyEvent.VK_D: addVelocity(new Vector2(+2, 0)); break;
                 case KeyEvent.VK_SPACE:
-                    context.getModel(Enemy.sEnemyName).ifPresent(m -> mKeyListener.requestExecute(m.copyPosition()));
+                    List<Enemy> models = context.getInstancesOf(Enemy.class);
+                    mKeyListener.requestExecute(models.get(0).copyPosition());
                     break;
             }
 		}
@@ -97,7 +99,6 @@ public final class Player extends DamageableModel {
     }
 
     public static final class Frape extends ThrowableModel {
-
         public Frape(Context context, Model parent, Vector2 target) {
             super(context, parent, target);
         }

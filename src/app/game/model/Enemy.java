@@ -13,7 +13,6 @@ import javax.sound.sampled.Clip;
 import java.awt.*;
 
 public class Enemy extends DamageableModel {
-	public static String sEnemyName = "_ENEMY_";
     private final TimerExecutor mAttackTimerExecutor = new EnemyAttacker(2000);
     private final Image mKilledImage = UI.loadImage("/game/sprites/enemy/enemy_killed.png");
     private final Clip mAttackSound = SoundUtils.loadClip("/game/sound/ti_eipate.wav");
@@ -60,9 +59,9 @@ public class Enemy extends DamageableModel {
     protected void onKilled() {
         super.onKilled();
         // spawn another
-        DamageableModel thrMod = new Enemy(context);
-        sEnemyName = "ENEMY_"+thrMod.hashCode();
-        context.addModel(sEnemyName, thrMod);
+        System.out.println("Adding new enemy...");
+        Enemy dmgMod = new Enemy(context);
+        context.addModel("_ENEMY_"+dmgMod.hashCode(), dmgMod);
     }
 
     public static class Zoe extends ThrowableModel {

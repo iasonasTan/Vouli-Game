@@ -4,6 +4,7 @@ import app.game.model.abstraction.Model;
 
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.util.List;
 import java.util.Optional;
 
 public interface Context extends Runnable {
@@ -16,4 +17,5 @@ public interface Context extends Runnable {
     float width();
     float height();
     Optional<Model> getColliderOf(Model model);
+    <T extends Model>List<T> getInstancesOf(Class<T> clazz);
 }

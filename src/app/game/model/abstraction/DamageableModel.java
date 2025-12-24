@@ -40,8 +40,7 @@ public abstract class DamageableModel extends AbstractModel {
     @Override
     public void update(double delta) {
         super.update(delta);
-        if(System.currentTimeMillis() > mKillTime && // not time to kill
-                mKillTime != -1) {
+        if(System.currentTimeMillis() > mKillTime && mKillTime != -1) {
 
             kill();
         }

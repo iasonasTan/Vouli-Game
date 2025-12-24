@@ -38,7 +38,7 @@ public class Game extends AbstractScreen implements Context {
         addKeyListener(new Listener());
     	
         addModel("_PLAYER_", new Player(this));
-        addModel(Enemy.sEnemyName, new Enemy(this).setPosition(new Vector2(500, 500)));
+        addModel("_ENEMY_", new Enemy(this).setPosition(new Vector2(500, 500)));
     }
 
     @Override
@@ -63,6 +63,16 @@ public class Game extends AbstractScreen implements Context {
                 return Optional.of(model);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public <T extends Model> List<T> getInstancesOf(Class<T> clazz) {
+        List<T> out = new ArrayList<>();
+        for (Model value : mModels.values()) {
+            if(clazz.isAssignableFrom(value.getClass()))
+                out.add(clazz.cast(value));
+        }
+        return out;
     }
 
     @Override
@@ -115,6 +125,7 @@ public class Game extends AbstractScreen implements Context {
 
     @Override
     public void addModel(String id, Model model) {
+        System.out.println("Added new model... "+model);
         mModels.put(id, model);
     }
 
@@ -157,7 +168,12 @@ public class Game extends AbstractScreen implements Context {
     private void updateGame(final double delta) {
         Map<String, Model> copy = new HashMap<>(mModels);
         copy.values().forEach(model -> model.update(delta));
-        copy.entrySet().removeIf(e -> !e.getValue().isAlive());
+        copy.entrySet().removeIf(e -> {
+            boolean out = !e.getValue().isAlive();
+            if(out)
+                System.out.println("Removing "+e.getValue()+"...");
+            return out;
+        });
         mModels = copy;
     }
 
