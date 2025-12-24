@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 public final class UI {
@@ -21,12 +23,16 @@ public final class UI {
             InputProperties properties = new InputProperties(inputStream);
             sSystemFullScreen = properties.getBoolean("sys_full_scr");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }
 
     private UI() {
+    }
+
+    public static void showException(Exception exception) {
+        JOptionPane.showMessageDialog(null, exception.getMessage()+" \n, "+ Arrays.asList(exception.getStackTrace()));
     }
 
     public static JPanel createPanel(JPanel parent, Consumer<JPanel> configurer, Component... comps) {

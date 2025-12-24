@@ -1,5 +1,7 @@
 package app.game.util.executor;
 
+import app.ui.UI;
+
 public abstract class TimerExecutor extends Thread {
     // time in millis
     private final long mDelay;
@@ -27,6 +29,7 @@ public abstract class TimerExecutor extends Thread {
                 // noinspection all
                 Thread.sleep(mDelay);
             } catch (InterruptedException e) {
+                UI.showException(e);
                 throw new RuntimeException(e);
             }
         }

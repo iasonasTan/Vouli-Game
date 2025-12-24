@@ -49,7 +49,7 @@ public abstract class DamageableModel extends AbstractModel {
 
     public void damage(Model attacker) {
         mHp--;
-        if(mHp<=0) {
+        if(mHp<=0 && mKillTime == -1) {
         	final long KILL_AFTER = 2000L;
             mKillTime = System.currentTimeMillis()+KILL_AFTER;
             useSprite(killSprite(), KILL_AFTER);

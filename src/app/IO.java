@@ -1,5 +1,7 @@
 package app;
 
+import app.ui.UI;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +29,7 @@ public final class IO {
             try {
                 Files.createDirectory(configDir);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                UI.showException(e);
                 throw new RuntimeException(e);
             }
         }
@@ -38,7 +40,7 @@ public final class IO {
         try {
             return Files.newOutputStream(getConfigFile(fileName));
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }
@@ -47,7 +49,7 @@ public final class IO {
         try {
             return Files.newInputStream(getConfigFile(fileName));
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }
@@ -58,7 +60,7 @@ public final class IO {
             try {
                 Files.createFile(out);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                UI.showException(e);
                 throw new RuntimeException(e);
             }
         }

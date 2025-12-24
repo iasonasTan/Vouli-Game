@@ -1,5 +1,7 @@
 package app.io;
 
+import app.ui.UI;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +14,7 @@ public class InputProperties {
         try {
             mProperties.load(inputStream);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }

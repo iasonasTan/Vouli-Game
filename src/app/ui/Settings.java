@@ -34,7 +34,7 @@ class Settings extends AbstractScreen {
             mEnableMusicCheckBox.setSelected(properties.getBoolean("enable_music"));
             mEnableSFXCheckBox.setSelected(properties.getBoolean("enable_sfx"));
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e);
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }
@@ -75,7 +75,7 @@ class Settings extends AbstractScreen {
                 }
                 return new OnShowInstructionsListener(sb.toString());
             } catch (IOException | NullPointerException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                UI.showException(e);
                 return new OnShowInstructionsListener("Failed to load instructions.");
             }
         }
@@ -95,7 +95,7 @@ class Settings extends AbstractScreen {
                 properties.put("enable_sfx", mEnableSFXCheckBox.isSelected());
                 properties.store(outputStream);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                UI.showException(e);
                 throw new RuntimeException(e);
             }
             new Menu().setVisible();

@@ -1,6 +1,7 @@
 package app;
 
 import app.io.InputProperties;
+import app.ui.UI;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -17,7 +18,7 @@ public final class SoundUtils {
             sEnableSFX = inputProperties.getBoolean("enable_sfx");
             sEnableMusic = inputProperties.getBoolean("enable_music");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }

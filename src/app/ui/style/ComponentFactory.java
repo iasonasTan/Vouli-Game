@@ -1,5 +1,7 @@
 package app.ui.style;
 
+import app.ui.UI;
+
 import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ public final class ComponentFactory {
             JComponent component = strConstructor.newInstance(text);
             return mStyler.styleComponent(component);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }

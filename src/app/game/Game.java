@@ -138,6 +138,7 @@ public class Game extends AbstractScreen implements Context {
             try {
                 Thread.sleep(6);
             } catch (InterruptedException e) {
+                UI.showException(e);
                 throw new RuntimeException(e);
             }
         };

@@ -1,5 +1,7 @@
 package app.io;
 
+import app.ui.UI;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.Properties;
@@ -30,7 +32,7 @@ public class OutputProperties {
         try {
             mProperties.store(outputStream, "Updated Settings");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            UI.showException(e);
             throw new RuntimeException(e);
         }
     }
