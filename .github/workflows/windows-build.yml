@@ -31,12 +31,7 @@ jobs:
         run: |
           mkdir dist
           move Game.jar dist/
-          jpackage --input dist --name Game --main-jar Game.jar --main-class app.Main --type exe --dest output --verbose
-#          jpackage --input dist --name Game --main-jar Game.jar --main-class app.Main --type exe --dest output
-
-#      - name: Create EXE with jpackage
-#        run: |
-#          jpackage --input . --name Game --main-jar Game.jar --main-class app.Main --type exe
+          jpackage --input dist --name Game --main-jar Game.jar --main-class app.Main --type exe --dest output --win-menu --win-shortcut
   #--icon /home/iasonas/IdeaProjects/Victims2/Victims2_EXE.png \
   #--app-version 2.45 \
   #--java-options "-Xmx512m"
