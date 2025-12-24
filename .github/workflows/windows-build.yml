@@ -19,13 +19,13 @@ jobs:
 
       - name: Compile Java
         run: |
-          mkdir out
-          javac -encoding UTF-8 -d out src/app/Main.java
+          cd src
+          javac app/Main.java
 
       - name: Create JAR
         run:
           |
-          jar -cfe Game.jar app.Main -C out .
+          jar -cfe Game.jar app.Main -C src .
 
       - name: Create EXE with jpackage
         run: |
