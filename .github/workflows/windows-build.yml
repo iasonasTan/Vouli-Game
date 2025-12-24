@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: GameEXE
-          path: Game.exe
+          path: output/Game.exe
