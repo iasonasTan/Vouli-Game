@@ -1,6 +1,6 @@
 package app.game.model;
 
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -19,6 +19,7 @@ import app.game.util.Vector2;
 import app.game.util.executor.LazyExecutor;
 import app.ui.Menu;
 import app.ui.UI;
+import app.ui.abstraction.AbstractScreen;
 
 public final class Player extends DamageableModel {
 	private final PlayerMouseListener mKeyListener = new PlayerMouseListener();
@@ -34,9 +35,37 @@ public final class Player extends DamageableModel {
     protected void onKilled() {
         super.onKilled();
         mAttackSound.close();
-        JOptionPane.showMessageDialog(null, "Game Over!");
         context.stop();
-        new Menu().setVisible();
+        new GameOverScreen().setVisible();
+    }
+
+    private final class GameOverScreen extends AbstractScreen {
+        private final JButton mExitButton = new JButton("OK");
+
+        public GameOverScreen() {
+            initSwing();
+        }
+
+        private void initSwing() {
+            setLayout(new GridBagLayout());
+            add(UI.createPanel(null, null, new JLabel("Game Over!"), mExitButton), new GridBagConstraints());
+            mExitButton.addActionListener(ae -> new Menu().setVisible());
+        }
+
+        @Override
+        protected String title() {
+            return "Vouli Game - Game Over";
+        }
+
+        @Override
+        protected Image background() {
+            return null;
+        }
+
+        @Override
+        protected Image icon() {
+            return UI.loadImage("/app_icon.png");
+        }
     }
 
     @Override

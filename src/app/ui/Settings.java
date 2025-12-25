@@ -52,11 +52,16 @@ class Settings extends AbstractScreen {
             p.setBackground(new Color(50, 50, 50));
         };
         JComponent[] components = {
-                mSysFullScrCheckBox, mEnableMusicCheckBox, mEnableSFXCheckBox, mShowInstructionsButton, mExitButton
+                mSysFullScrCheckBox, mEnableMusicCheckBox, mEnableSFXCheckBox, mShowInstructionsButton, mExitButton,
+                new JTextField("Changes to some settings will take \neffect after restarting the application.")
         };
         add(UI.createPanel(null, styleConsumer, components), new GridBagConstraints());
         mExitButton.addActionListener(new OnExitListener());
         mShowInstructionsButton.addActionListener(OnShowInstructionsListener.fromResource("/instructions.txt"));
+        JTextField field = (JTextField) components[5];
+        field.setEditable(false);
+        field.setBackground(Color.RED);
+        field.setForeground(Color.WHITE);
     }
 
     private static final class OnShowInstructionsListener implements ActionListener {
@@ -99,8 +104,6 @@ class Settings extends AbstractScreen {
                 UI.showException(e);
                 throw new RuntimeException(e);
             }
-            JOptionPane.showMessageDialog(Settings.this, "Changes to some settings will take " +
-                    "\neffect after restarting the application.");
             SoundUtils.init();
             new Menu().setVisible();
         }

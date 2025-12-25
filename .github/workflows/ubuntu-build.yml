@@ -26,13 +26,13 @@ jobs:
       - name: Create JAR
         run:
           |
-          jar -cfe Game.jar app.Main -C src . -C resources .
+          jar -cfe Vouli-Game.jar app.Main -C src . -C resources .
 
       - name: Create DEB with jpackage
         run: |
           mkdir dist
-          mv Game.jar dist/
-          jpackage --input dist --name Game --main-jar Game.jar --type deb --dest output --icon resources/app_icon.png
+          mv Vouli-Game.jar dist/
+          jpackage --input dist --name Vouli-Game --main-jar Vouli-Game.jar --type deb --dest output --icon resources/app_icon.png
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4

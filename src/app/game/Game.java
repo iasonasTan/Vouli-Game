@@ -155,8 +155,6 @@ public class Game extends AbstractScreen implements Context {
             deltaTime = endTime - startTime;
 
             long sleep = (long)(TARGET_FPS-deltaTime/1_000_000f);
-            System.out.println(sleep);
-
             try {
                 // noinspection all
                 Thread.sleep(sleep > 0 ? sleep : 0);

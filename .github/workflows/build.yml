@@ -1,11 +1,12 @@
-name: Build Windows EXE
+name: Build Jar
 
 on:
   push:
     branches: [ master ]
+
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -27,14 +28,8 @@ jobs:
           |
           jar -cfe Vouli-Game.jar app.Main -C src . -C resources .
 
-      - name: Create EXE with jpackage
-        run: |
-          mkdir dist
-          move Vouli-Game.jar dist/
-          jpackage --input dist --name Vouli-Game --main-jar Vouli-Game.jar --main-class app.Main --type exe --dest output --win-menu --win-shortcut --icon resources/app_icon.ico
-
-      - name: Upload EXE
+      - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
-          name: GameEXE
-          path: output/*.exe
+          name: GameJar
+          path: Vouli-Game.jar
