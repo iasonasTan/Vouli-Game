@@ -3,6 +3,7 @@ package app.game.util;
 import java.awt.*;
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public final class VerticalFlowLayout implements LayoutManager2 {
     private final ArrayList<Component> components = new ArrayList<>();
     public int vGap = 0, hGap = 0;

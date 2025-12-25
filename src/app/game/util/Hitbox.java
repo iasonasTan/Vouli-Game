@@ -1,5 +1,6 @@
 package app.game.util;
 
+@SuppressWarnings("unused")
 public class Hitbox {
     public final Vector2 pos;
     public final Size size;
@@ -28,8 +29,7 @@ public class Hitbox {
     public boolean equals(Object o) {
         if(o == this) return true;
         if(o == null) return false;
-        if(o instanceof Hitbox) {
-            Hitbox hb = (Hitbox)o;
+        if(o instanceof Hitbox hb) {
             return hb.pos.equals(pos)&&hb.size.equals(size);
         } else {
             return false;
@@ -38,11 +38,11 @@ public class Hitbox {
 
     public final boolean intersects(Hitbox hb) {
         // this
-        float tx = pos.x, ty = pos.y;
-        float tw = size.width, th = size.height;
+        double tx = pos.x, ty = pos.y;
+        double tw = size.width, th = size.height;
         // other
-        float ox = hb.pos.x, oy = hb.pos.y;
-        float ow = hb.size.width, oh = hb.size.height;
+        double ox = hb.pos.x, oy = hb.pos.y;
+        double ow = hb.size.width, oh = hb.size.height;
 
         return tx < ox+ow && tx+tw > ox &&
                 ty < oy+oh && ty+th > oy;

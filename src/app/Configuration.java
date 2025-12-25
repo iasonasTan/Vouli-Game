@@ -2,7 +2,6 @@ package app;
 
 import app.ui.UI;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class IO {
+public final class Configuration {
     private static String sConfigDirectory;
 
     public static void init() {
@@ -38,7 +37,7 @@ public final class IO {
 
     public static OutputStream getConfigOutputStream(String fileName) {
         try {
-            return Files.newOutputStream(getConfigFile(fileName));
+            return Files.newOutputStream(getConfigPath(fileName));
         } catch (IOException e) {
             UI.showException(e);
             throw new RuntimeException(e);
@@ -47,14 +46,14 @@ public final class IO {
 
     public static InputStream getConfigInputStream(String fileName) {
         try {
-            return Files.newInputStream(getConfigFile(fileName));
+            return Files.newInputStream(getConfigPath(fileName));
         } catch (IOException e) {
             UI.showException(e);
             throw new RuntimeException(e);
         }
     }
 
-    public static Path getConfigFile(String fileName) {
+    public static Path getConfigPath(String fileName) {
         Path out = Paths.get(sConfigDirectory, fileName);
         if (!Files.isRegularFile(out) || !Files.exists(out)) {
             try {
@@ -67,5 +66,5 @@ public final class IO {
         return out;
     }
 
-    private IO(){}
+    private Configuration(){}
 }

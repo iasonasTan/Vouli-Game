@@ -6,12 +6,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import app.game.model.abstraction.Model;
 import app.game.model.Enemy;
@@ -101,9 +96,13 @@ public class Game extends AbstractScreen implements Context {
         @Override public void keyReleased(KeyEvent keyEvent) {}
     }
 
+    @Override
     public void stop() {
         mRunning = false;
-        mModels.clear();
+        mModels.remove("_PLAYER_");
+        for (Model model : mModels.values()) {
+            model.kill();
+        }
     }
 
     public void start() {
@@ -145,35 +144,33 @@ public class Game extends AbstractScreen implements Context {
 
     @Override
     public void run() {
-        final Runnable sleeper = () -> {
+        long startTime, endTime, deltaTime;
+        final double TARGET_FPS = 1000f/60f;
+
+        while(mRunning) {
+            startTime = System.nanoTime();
+            updateGame(1);
+            render();
+            endTime = System.nanoTime();
+            deltaTime = endTime - startTime;
+
+            long sleep = (long)(TARGET_FPS-deltaTime/1_000_000f);
+            System.out.println(sleep);
+
             try {
-                Thread.sleep(6);
+                // noinspection all
+                Thread.sleep(sleep > 0 ? sleep : 0);
             } catch (InterruptedException e) {
-                UI.showException(e);
                 throw new RuntimeException(e);
             }
-        };
-        long before, after;
-        double delta = 0;
-        while(mRunning) {
-            before = System.nanoTime();
-            updateGame(delta/1_000_000);
-            render();
-            after = System.nanoTime();
-            delta = after-before;
-            sleeper.run();
         }
+
     }
 
     private void updateGame(final double delta) {
         Map<String, Model> copy = new HashMap<>(mModels);
+        copy.entrySet().removeIf(e -> !e.getValue().isAlive());
         copy.values().forEach(model -> model.update(delta));
-        copy.entrySet().removeIf(e -> {
-            boolean out = !e.getValue().isAlive();
-            if(out)
-                System.out.println("Removing "+e.getValue()+"...");
-            return out;
-        });
         mModels = copy;
     }
 

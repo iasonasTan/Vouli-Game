@@ -33,10 +33,6 @@ public abstract class DamageableModel extends AbstractModel {
         g.setColor(Color.WHITE);
     }
 
-    public final void heal(int hp) {
-        mHp += hp;
-    }
-
     @Override
     public void update(double delta) {
         super.update(delta);

@@ -48,7 +48,7 @@ public abstract class AbstractScreen extends JPanel implements Screen {
         super.paintComponent(graphics);
         if(mBackgroundImage!=null) {
             Dimension pSize = getPreferredSize();
-            graphics.drawImage(mBackgroundImage, 0, 0, pSize.width, pSize.width, null);
+            graphics.drawImage(mBackgroundImage, 0, 0, pSize.width, pSize.height, null);
         }
     }
 }

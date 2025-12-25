@@ -2,10 +2,11 @@ package app.io;
 
 import app.ui.UI;
 
-import javax.swing.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 
+@SuppressWarnings("unused")
 public class OutputProperties {
     private final Properties mProperties = new Properties();
 

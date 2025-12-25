@@ -57,8 +57,8 @@ public abstract class AbstractModel implements Model {
 
     @Override
     public void update(double delta) {
-        mHitbox.pos.x += (float) (mVelocity.x*delta);
-        mHitbox.pos.y += (float) (mVelocity.y*delta);
+        mHitbox.pos.x += mVelocity.x*delta;
+        mHitbox.pos.y += mVelocity.y*delta;
         if(mTempSpriteEndTime<System.currentTimeMillis()) {
             mTempSprite = null;
         }

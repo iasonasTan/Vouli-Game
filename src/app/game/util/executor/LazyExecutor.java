@@ -2,8 +2,8 @@ package app.game.util.executor;
 
 public abstract class LazyExecutor {
     // time in millis
-    private long mBreakTime;
-    private long mLastExecutionTime;
+    private final long mBreakTime;
+    private long mLastExecutionTime = 0;
 
     public LazyExecutor(long breakTime) {
         mBreakTime = breakTime;

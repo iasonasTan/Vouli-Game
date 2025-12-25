@@ -3,6 +3,7 @@ package app.ui.style;
 import javax.swing.*;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public final class Styler {
     private final Consumer<JComponent> mStyler;
     private final Style mStyle;
@@ -19,13 +20,13 @@ public final class Styler {
 
     public JComponent styleComponent(JComponent component) {
         if(mStyle != null) {
-            component.setBackground(mStyle.background);
-            component.setForeground(mStyle.foreground);
-            component.setPreferredSize(mStyle.size);
-            component.setFont(mStyle.font);
-            component.setFocusable(mStyle.focusable);
+            component.setBackground(mStyle.background());
+            component.setForeground(mStyle.foreground());
+            component.setPreferredSize(mStyle.size());
+            component.setFont(mStyle.font());
+            component.setFocusable(mStyle.focusable());
             if(component instanceof JButton)
-                ((JButton)component).setHorizontalAlignment(mStyle.alignment);
+                ((JButton)component).setHorizontalAlignment(mStyle.alignment());
         }
         if(mStyler!=null) {
             mStyler.accept(component);
@@ -33,6 +34,7 @@ public final class Styler {
         return component;
     }
 
+    @SuppressWarnings("all")
     public JComponent[] styleComponents(JComponent... components) {
         for (JComponent component : components) {
             styleComponent(component);

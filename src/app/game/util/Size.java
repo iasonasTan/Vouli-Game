@@ -3,6 +3,7 @@ package app.game.util;
 /**
  * <b>Not</b> working in <i>hash collections</i>
  */
+@SuppressWarnings("unused")
 public final class Size {
     public float width, height;
 
@@ -29,8 +30,7 @@ public final class Size {
     public boolean equals(Object o) {
         if(o == this) return true;
         if(o == null) return false;
-        if(o instanceof Size) {
-            Size size = (Size)o;
+        if(o instanceof Size size) {
             return size.width == width && size.height == height;
         } else {
             return false;

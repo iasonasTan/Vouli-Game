@@ -1,6 +1,7 @@
 package app.ui;
 
-import app.IO;
+import app.Configuration;
+import app.SoundUtils;
 import app.game.util.VerticalFlowLayout;
 import app.io.InputProperties;
 import app.io.OutputProperties;
@@ -28,7 +29,7 @@ class Settings extends AbstractScreen {
     }
 
     private void loadSettings() {
-        try (InputStream inputStream = IO.getConfigInputStream("settings.properties")) {
+        try (InputStream inputStream = Configuration.getConfigInputStream("settings.properties")) {
             InputProperties properties = new InputProperties(inputStream);
             mSysFullScrCheckBox.setSelected(properties.getBoolean("sys_full_scr"));
             mEnableMusicCheckBox.setSelected(properties.getBoolean("enable_music"));
@@ -54,7 +55,7 @@ class Settings extends AbstractScreen {
                 mSysFullScrCheckBox, mEnableMusicCheckBox, mEnableSFXCheckBox, mShowInstructionsButton, mExitButton
         };
         add(UI.createPanel(null, styleConsumer, components), new GridBagConstraints());
-        mExitButton.addActionListener(new ExitListener());
+        mExitButton.addActionListener(new OnExitListener());
         mShowInstructionsButton.addActionListener(OnShowInstructionsListener.fromResource("/instructions.txt"));
     }
 
@@ -67,7 +68,7 @@ class Settings extends AbstractScreen {
 
         public static OnShowInstructionsListener fromResource(String path) {
             // noinspection all : nullpointerexception handled
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(Settings.class.getResourceAsStream("/instructions.txt")))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(Settings.class.getResourceAsStream(path)))) {
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -86,9 +87,9 @@ class Settings extends AbstractScreen {
         }
     }
 
-    private final class ExitListener implements ActionListener {
+    private final class OnExitListener implements ActionListener {
         @Override public void actionPerformed(ActionEvent actionEvent) {
-            try (OutputStream outputStream = IO.getConfigOutputStream("settings.properties")) {
+            try (OutputStream outputStream = Configuration.getConfigOutputStream("settings.properties")) {
                 OutputProperties properties = new OutputProperties();
                 properties.put("sys_full_scr", mSysFullScrCheckBox.isSelected());
                 properties.put("enable_music", mEnableMusicCheckBox.isSelected());
@@ -98,6 +99,9 @@ class Settings extends AbstractScreen {
                 UI.showException(e);
                 throw new RuntimeException(e);
             }
+            JOptionPane.showMessageDialog(Settings.this, "Changes to some settings will take " +
+                    "\neffect after restarting the application.");
+            SoundUtils.init();
             new Menu().setVisible();
         }
     }

@@ -6,6 +6,7 @@ import app.game.util.Vector2;
 
 import java.awt.*;
 
+@SuppressWarnings("unused")
 public interface Model {
     Model setPosition(Vector2 position);
     Model setSize(Size size);

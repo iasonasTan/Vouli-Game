@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.sound.sampled.Clip;
+import javax.swing.*;
 
 import app.SoundUtils;
 import app.game.Context;
@@ -16,6 +17,7 @@ import app.game.model.abstraction.ThrowableModel;
 import app.game.util.KeyEventHandler;
 import app.game.util.Vector2;
 import app.game.util.executor.LazyExecutor;
+import app.ui.Menu;
 import app.ui.UI;
 
 public final class Player extends DamageableModel {
@@ -32,6 +34,9 @@ public final class Player extends DamageableModel {
     protected void onKilled() {
         super.onKilled();
         mAttackSound.close();
+        JOptionPane.showMessageDialog(null, "Game Over!");
+        context.stop();
+        new Menu().setVisible();
     }
 
     @Override
@@ -75,25 +80,28 @@ public final class Player extends DamageableModel {
     }
 
     private final class PlayerKeyListener extends KeyEventHandler {
+        private static final double SPEED = 5;
+
         @Override protected void onPress(int kc) {
         	switch(kc) {
-                case KeyEvent.VK_W: addVelocity(new Vector2(0, -2)); break;
-                case KeyEvent.VK_A: addVelocity(new Vector2(-2, 0)); break;
-                case KeyEvent.VK_S: addVelocity(new Vector2(0, +2)); break;
-                case KeyEvent.VK_D: addVelocity(new Vector2(+2, 0)); break;
+                case KeyEvent.VK_W: addVelocity(new Vector2(0, -SPEED)); break;
+                case KeyEvent.VK_A: addVelocity(new Vector2(-SPEED, 0)); break;
+                case KeyEvent.VK_S: addVelocity(new Vector2(0, +SPEED)); break;
+                case KeyEvent.VK_D: addVelocity(new Vector2(+SPEED, 0)); break;
                 case KeyEvent.VK_SPACE:
                     List<Enemy> models = context.getInstancesOf(Enemy.class);
-                    mKeyListener.requestExecute(models.get(0).copyPosition());
+                    if(!models.isEmpty())
+                        mKeyListener.requestExecute(models.get(0).copyPosition());
                     break;
             }
 		}
 
 		@Override protected void onRelease(int kc) {
 			switch (kc) {
-				case KeyEvent.VK_W: addVelocity(new Vector2(0, +2)); break;
-	            case KeyEvent.VK_A: addVelocity(new Vector2(+2, 0)); break;
-	            case KeyEvent.VK_S: addVelocity(new Vector2(0, -2)); break;
-	            case KeyEvent.VK_D: addVelocity(new Vector2(-2, 0)); break;
+				case KeyEvent.VK_W: addVelocity(new Vector2(0, +SPEED)); break;
+	            case KeyEvent.VK_A: addVelocity(new Vector2(+SPEED, 0)); break;
+	            case KeyEvent.VK_S: addVelocity(new Vector2(0, -SPEED)); break;
+	            case KeyEvent.VK_D: addVelocity(new Vector2(-SPEED, 0)); break;
 	        }	
 		}
     }

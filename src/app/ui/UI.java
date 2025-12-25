@@ -1,6 +1,6 @@
 package app.ui;
 
-import app.IO;
+import app.Configuration;
 import app.io.InputProperties;
 
 import javax.imageio.ImageIO;
@@ -10,8 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -19,7 +17,7 @@ public final class UI {
     public static boolean sSystemFullScreen = false;
 
     public static void init() {
-        try(InputStream inputStream= IO.getConfigInputStream("settings.properties")) {
+        try(InputStream inputStream= Configuration.getConfigInputStream("settings.properties")) {
             InputProperties properties = new InputProperties(inputStream);
             sSystemFullScreen = properties.getBoolean("sys_full_scr");
         } catch (IOException e) {

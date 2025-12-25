@@ -6,13 +6,13 @@ import java.awt.*;
  * <b>Not</b> working in <i>hash collections</i>
  */
 public final class Vector2 {
-    public float x, y;
+    public double x, y;
 
     public Vector2() {
         this(0f, 0f);
     }
 
-    public Vector2(float x, float y) {
+    public Vector2(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -36,8 +36,7 @@ public final class Vector2 {
     public boolean equals(Object o) {
         if(o == this) return true;
         if(o == null) return false;
-        if(o instanceof Vector2) {
-            Vector2 vec = (Vector2)o;
+        if(o instanceof Vector2 vec) {
             return vec.x == x && vec.y == y;
         } else {
             return false;

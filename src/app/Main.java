@@ -7,7 +7,7 @@ import javax.sound.sampled.Clip;
 
 public class Main {
     public static void main(String[] args) {
-        IO.init();
+        Configuration.init();
 
         UI.init();
         SoundUtils.init();

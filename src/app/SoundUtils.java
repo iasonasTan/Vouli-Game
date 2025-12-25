@@ -4,7 +4,6 @@ import app.io.InputProperties;
 import app.ui.UI;
 
 import javax.sound.sampled.*;
-import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -13,7 +12,7 @@ public final class SoundUtils {
     public static boolean sEnableSFX, sEnableMusic;
 
     public static void init() {
-        try (InputStream inputStream = IO.getConfigInputStream("settings.properties")) {
+        try (InputStream inputStream = Configuration.getConfigInputStream("settings.properties")) {
             InputProperties inputProperties = new InputProperties(inputStream);
             sEnableSFX = inputProperties.getBoolean("enable_sfx");
             sEnableMusic = inputProperties.getBoolean("enable_music");

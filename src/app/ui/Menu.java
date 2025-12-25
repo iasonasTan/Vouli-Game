@@ -61,9 +61,7 @@ public class Menu extends AbstractScreen {
             dispose();
             System.exit(0);
         });
-        mSettingsButton.addActionListener(ae -> {
-            new Settings().setVisible();
-        });
+        mSettingsButton.addActionListener(ae -> new Settings().setVisible());
     }
 
     @Override

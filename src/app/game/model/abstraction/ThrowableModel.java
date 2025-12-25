@@ -1,10 +1,10 @@
 package app.game.model.abstraction;
 
-import java.util.Optional;
-
 import app.game.Context;
 import app.game.util.Size;
 import app.game.util.Vector2;
+
+import java.util.Optional;
 
 public abstract class ThrowableModel extends AbstractModel {
     private final Model mParent;
@@ -18,12 +18,12 @@ public abstract class ThrowableModel extends AbstractModel {
     }
     
     private void calculateVelocity(Vector2 target) {
-        float diffX = target.x - copyPosition().x;
-        float diffY = target.y - copyPosition().y;
+        double diffX = target.x - copyPosition().x;
+        double diffY = target.y - copyPosition().y;
         float length = (float)Math.sqrt(diffX * diffX + diffY * diffY);
 
         Vector2 vel = new Vector2(diffX / length, diffY / length);
-        float VELOCITY = 8;
+        float VELOCITY = 2;
         vel.x *= VELOCITY;
         vel.y *= VELOCITY;
         addVelocity(vel);
@@ -36,8 +36,7 @@ public abstract class ThrowableModel extends AbstractModel {
         Optional<Model> colliderOptional = context.getColliderOf(this);
         colliderOptional.ifPresent(m -> {
             if(!m.equals(mParent)&&!m.equals(this)) {
-                if(m instanceof DamageableModel) {
-                    DamageableModel dModel = (DamageableModel)m;
+                if(m instanceof DamageableModel dModel) {
                     dModel.damage(this);
                     kill();
                 } else {

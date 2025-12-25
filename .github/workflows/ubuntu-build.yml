@@ -1,0 +1,41 @@
+name: Build Ubuntu DEB
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Compile Java
+        run: |
+          cd src
+          javac app/Main.java
+
+      - name: Create JAR
+        run:
+          |
+          jar -cfe Game.jar app.Main -C src . -C resources .
+
+      - name: Create DEB with jpackage
+        run: |
+          mkdir dist
+          mv Game.jar dist/
+          jpackage --input dist --name Game --main-jar Game.jar --type deb --dest output --icon resources/app_icon.png
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: GameDEB
+          path: output/*.deb
