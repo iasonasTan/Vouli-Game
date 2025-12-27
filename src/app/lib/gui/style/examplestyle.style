@@ -1,0 +1,27 @@
+Example of configuration file compatible with SimpleStyleLoader
+
+types:
+    color=255,255,255
+    dimension=1920x1080
+    integer=5
+    float=3.14
+    font=/path/to/your/font.ttf
+    image=/path/to/your/image.png
+    boolean=true
+
+    alignment = left
+                right
+                center
+
+example:
+    font_family=/menu/fonts/ibm_plex_serif_bold.ttf
+    font_size=17
+
+    background=128,160,119
+    foreground=255,255,255
+
+    focusable=false
+    size=250x40
+    alignment=center
+
+    image=/menu/images/background.png

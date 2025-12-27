@@ -1,20 +1,27 @@
 package app;
 
-import app.ui.Menu;
-import app.ui.UI;
+import app.lib.io.Resources;
+import app.menu.Menu;
+import app.lib.gui.UI;
+import app.lib.io.Configuration;
+import app.lib.media.Sound;
 
 import javax.sound.sampled.Clip;
 
 public class Main {
     public static void main(String[] args) {
-        Configuration.init();
+        Configuration.init("vouli_game");
 
-        UI.init();
-        SoundUtils.init();
-
-        Clip music = SoundUtils.loadClip("/game/sound/background_music.wav");
-        SoundUtils.playMusic(music);
+        initUtils();
 
         new Menu().setVisible();
+    }
+
+    public static void initUtils() {
+        UI.load();
+        Sound.load();
+
+        Clip music = Resources.loadClip("/game/sound/background_music.wav");
+        Sound.playMusic(music);
     }
 }

@@ -7,26 +7,23 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.sound.sampled.Clip;
-import javax.swing.*;
 
-import app.SoundUtils;
-import app.game.Context;
-import app.game.model.abstraction.DamageableModel;
-import app.game.model.abstraction.Model;
-import app.game.model.abstraction.ThrowableModel;
-import app.game.util.KeyEventHandler;
-import app.game.util.Vector2;
-import app.game.util.executor.LazyExecutor;
-import app.ui.Menu;
-import app.ui.UI;
-import app.ui.abstraction.AbstractScreen;
+import app.lib.io.Resources;
+import app.lib.media.Sound;
+import app.game.lib.Context;
+import app.game.lib.model.DamageableModel;
+import app.game.lib.model.Model;
+import app.game.lib.model.ThrowableModel;
+import app.lib.gui.event.KeyEventHandler;
+import app.lib.gui.Vector2;
+import app.lib.LazyExecutor;
 
 public final class Player extends DamageableModel {
 	private final PlayerMouseListener mKeyListener = new PlayerMouseListener();
-    private final Clip mAttackSound = SoundUtils.loadClip("/game/sound/siopi.wav");
+    private final Clip mAttackSound = Resources.loadClip("/game/sound/siopi.wav");
 
     public Player(Context context) {
-        super(context, 10);
+        super(context, 4);
         context.addKeyListener(new PlayerKeyListener());
         context.addMouseListener(mKeyListener);
     }
@@ -35,56 +32,25 @@ public final class Player extends DamageableModel {
     protected void onKilled() {
         super.onKilled();
         mAttackSound.close();
-        context.stop();
-        new GameOverScreen().setVisible();
-    }
-
-    private final class GameOverScreen extends AbstractScreen {
-        private final JButton mExitButton = new JButton("OK");
-
-        public GameOverScreen() {
-            initSwing();
-        }
-
-        private void initSwing() {
-            setLayout(new GridBagLayout());
-            add(UI.createPanel(null, null, new JLabel("Game Over!"), mExitButton), new GridBagConstraints());
-            mExitButton.addActionListener(ae -> new Menu().setVisible());
-        }
-
-        @Override
-        protected String title() {
-            return "Vouli Game - Game Over";
-        }
-
-        @Override
-        protected Image background() {
-            return null;
-        }
-
-        @Override
-        protected Image icon() {
-            return UI.loadImage("/app_icon.png");
-        }
     }
 
     @Override
     protected Image getSprite() {
-        return UI.loadImage("/game/sprites/player/player.png");
+        return Resources.loadImage("/game/sprites/player/player.png");
     }
 
     @Override
     protected Clip killSound() {
-        return SoundUtils.loadOneUseClip("/game/sound/iphone30.wav");
+        return Resources.loadOneUseClip("/game/sound/iphone30.wav");
     }
 
     @Override
     protected Image killSprite() {
-        return UI.loadImage("/game/sprites/player/player_killed.png");
+        return Resources.loadImage("/game/sprites/player/player_killed.png");
     }
 
     private final class PlayerMouseListener extends LazyExecutor implements MouseListener {
-        private final Image mAttackSprite = UI.loadImage("/game/sprites/player/player_attack.png");
+        private final Image mAttackSprite = Resources.loadImage("/game/sprites/player/player_attack.png");
 
         public PlayerMouseListener() { super(500L); }
 
@@ -104,7 +70,7 @@ public final class Player extends DamageableModel {
             ThrowableModel frape = new Frape(context, Player.this, target);
             context.addModel("FRAPE_"+frape.hashCode(), frape);
             useSprite(mAttackSprite, getBreakTime());
-            SoundUtils.playSFX(mAttackSound);
+            Sound.playSFX(mAttackSound);
         }
     }
 
@@ -118,7 +84,7 @@ public final class Player extends DamageableModel {
                 case KeyEvent.VK_S: addVelocity(new Vector2(0, +SPEED)); break;
                 case KeyEvent.VK_D: addVelocity(new Vector2(+SPEED, 0)); break;
                 case KeyEvent.VK_SPACE:
-                    List<Enemy> models = context.getInstancesOf(Enemy.class);
+                    List<AbstractEnemy> models = context.getInstancesOf(AbstractEnemy.class);
                     if(!models.isEmpty())
                         mKeyListener.requestExecute(models.get(0).copyPosition());
                     break;
@@ -142,7 +108,7 @@ public final class Player extends DamageableModel {
 
         @Override
         protected Image getSprite() {
-            return UI.loadImage("/game/sprites/player/frape.png");
+            return Resources.loadImage("/game/sprites/player/frape.png");
         }
     }
 }

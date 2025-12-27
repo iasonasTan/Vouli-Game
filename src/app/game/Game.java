@@ -1,28 +1,28 @@
 package app.game;
 
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.MouseInfo;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
+import java.util.List;
 
-import app.game.model.abstraction.Model;
-import app.game.model.Enemy;
+import app.game.lib.Context;
+import app.game.model.Konstantopoulou;
+import app.game.lib.model.Model;
 import app.game.model.Player;
-import app.game.model.abstraction.AbstractModel;
-import app.game.util.Vector2;
-import app.ui.Menu;
-import app.ui.UI;
-import app.ui.abstraction.AbstractScreen;
+import app.game.lib.model.AbstractModel;
+import app.lib.io.Resources;
+import app.lib.gui.Vector2;
+import app.menu.GameOverScreen;
+import app.menu.abstraction.AbstractScreen;
 
 // TODO add score
 // TODO add save score
 
 public class Game extends AbstractScreen implements Context {
-    private Map<String, Model> mModels = Collections.synchronizedMap(new HashMap<>());
-    private final Image mBackground = UI.loadImage("/background.jpg");
+    private final Map<String, Model> mModels = new HashMap<>();
+    private final Map<String, Model> mModelsBuff = new HashMap<>();
+    private final Image mBackground = Resources.loadImage("/background.jpg");
     private boolean mRunning = false;
     private Thread mThread;
 
@@ -33,7 +33,27 @@ public class Game extends AbstractScreen implements Context {
         addKeyListener(new Listener());
     	
         addModel("_PLAYER_", new Player(this));
-        addModel("_ENEMY_", new Enemy(this).setPosition(new Vector2(500, 500)));
+        addModel("_ENEMY_", new Konstantopoulou(this).setPosition(new Vector2(500, 500)));
+    }
+
+    private final class Listener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent keyEvent) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent keyEvent) {
+            switch (keyEvent.getKeyCode()) {
+                case KeyEvent.VK_ESCAPE:
+                    exitGame();
+                    break;
+                case KeyEvent.VK_F1:
+                    AbstractModel.sDrawDebug = !AbstractModel.sDrawDebug;
+                    break;
+            }
+        }
+
+        @Override public void keyReleased(KeyEvent keyEvent) {}
     }
 
     @Override
@@ -43,12 +63,12 @@ public class Game extends AbstractScreen implements Context {
 
     @Override
     protected Image background() {
-        return UI.loadImage("/background.jpg");
+        return Resources.loadImage("/background.jpg");
     }
 
     @Override
     protected Image icon() {
-        return UI.loadImage("/app_icon.png");
+        return Resources.loadImage("/app_icon.png");
     }
 
     @Override
@@ -71,38 +91,19 @@ public class Game extends AbstractScreen implements Context {
     }
 
     @Override
-    public void exit() {
-        stop();
-        new Menu().setVisible();
-    }
-
-    private final class Listener implements KeyListener {
-        @Override
-        public void keyTyped(KeyEvent keyEvent) {
+    public void exitGame() {
+        stopGameThread();
+        Iterator<Model> modelIter = mModels.values().iterator();
+        while(modelIter.hasNext()) {
+            modelIter.next().kill();
+            modelIter.remove();
         }
-
-        @Override
-        public void keyPressed(KeyEvent keyEvent) {
-            switch (keyEvent.getKeyCode()) {
-                case KeyEvent.VK_ESCAPE:
-                    exit();
-                    break;
-                case KeyEvent.VK_F1:
-                    AbstractModel.sDrawDebug = !AbstractModel.sDrawDebug;
-                    break;
-            }
-        }
-
-        @Override public void keyReleased(KeyEvent keyEvent) {}
+        new GameOverScreen().setVisible();
     }
 
     @Override
-    public void stop() {
+    public void stopGameThread() {
         mRunning = false;
-        mModels.remove("_PLAYER_");
-        for (Model model : mModels.values()) {
-            model.kill();
-        }
     }
 
     public void start() {
@@ -124,8 +125,8 @@ public class Game extends AbstractScreen implements Context {
 
     @Override
     public void addModel(String id, Model model) {
-        System.out.println("Added new model... "+model);
-        mModels.put(id, model);
+        System.out.println("Added model "+model);
+        mModelsBuff.put(id, model);
     }
 
     @Override
@@ -166,10 +167,14 @@ public class Game extends AbstractScreen implements Context {
     }
 
     private void updateGame(final double delta) {
-        Map<String, Model> copy = new HashMap<>(mModels);
-        copy.entrySet().removeIf(e -> !e.getValue().isAlive());
-        copy.values().forEach(model -> model.update(delta));
-        mModels = copy;
+        mModels.putAll(mModelsBuff);
+        mModelsBuff.clear();
+        mModels.values().forEach(m -> m.update(delta));
+        mModels.values().removeIf(m -> !m.isAlive() && !(m instanceof Player));
+        getModel("_PLAYER_").ifPresent(m -> {
+            if(!m.isAlive())
+                exitGame();
+        });
     }
 
     private void render() {
