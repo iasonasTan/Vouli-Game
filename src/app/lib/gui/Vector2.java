@@ -8,6 +8,10 @@ import java.awt.*;
 public final class Vector2 {
     public double x, y;
 
+    public Vector2(double p) {
+        this(p, p);
+    }
+
     public Vector2() {
         this(0f, 0f);
     }
@@ -51,13 +55,21 @@ public final class Vector2 {
         return (int)y;
     }
 
-    public void set(Vector2 data) {
+    public Vector2 set(Vector2 data) {
         x = data.x;
         y = data.y;
+        return this;
     }
     
-    public void add(Vector2 data) {
+    public Vector2 add(Vector2 data) {
     	x += data.x;
     	y += data.y;
+        return this;
+    }
+
+    public Vector2 scale(Vector2 scale) {
+        x *= scale.x;
+        y *= scale.y;
+        return this;
     }
 }

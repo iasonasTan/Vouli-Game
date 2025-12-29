@@ -15,6 +15,11 @@ public class Konstantopoulou extends AbstractEnemy {
     }
 
     @Override
+    protected String attackSprite() {
+        return "/game/konstantopoulou/model_attack.png";
+    }
+
+    @Override
     protected ThrowableModel createThrowableModel(Vector2 target) {
         return new Zoe(context, this, target);
     }
@@ -31,22 +36,22 @@ public class Konstantopoulou extends AbstractEnemy {
 
     @Override
     protected Clip attackSound() {
-        return Resources.loadClip("/game/sound/ti_eipate.wav");
+        return Resources.loadClip("/game/konstantopoulou/ti_eipate.wav");
     }
 
     @Override
     protected Clip killSound() {
-        return Resources.loadClip("/game/sound/tha_ti_skotoso.wav");
+        return Resources.loadClip("/game/konstantopoulou/tha_ti_skotoso.wav");
     }
 
     @Override
     protected Image killSprite() {
-        return Resources.loadImage("/game/sprites/enemy/enemy_killed.png");
+        return Resources.loadImage("/game/konstantopoulou/dead_model.png");
     }
 
     @Override
     protected Image getSprite() {
-        return Resources.loadImage("/game/sprites/enemy/enemy.png");
+        return Resources.loadImage("/game/konstantopoulou/model.png");
     }
 
     public static final class Zoe extends ThrowableModel {
@@ -56,7 +61,7 @@ public class Konstantopoulou extends AbstractEnemy {
 
         @Override
         protected Image getSprite() {
-            return Resources.loadImage("/game/sprites/enemy/zoe.png");
+            return Resources.loadImage("/game/konstantopoulou/throwable.png");
         }
     }
 }

@@ -1,5 +1,6 @@
 package app.lib.gui.style;
 
+import app.lib.gui.ComponentBuilder;
 import app.lib.gui.UI;
 
 import javax.swing.*;
@@ -15,9 +16,22 @@ public final class ComponentFactory {
 
     public <T extends JComponent> T newComponent(Class<T> clazz, String text) {
         try {
-            Constructor<? extends JComponent> strConstructor = clazz.getConstructor(String.class);
-            JComponent component = strConstructor.newInstance(text);
-            return mSimpleStyler.styleComponent(clazz, component);
+            Constructor<T> strConstructor = clazz.getConstructor(String.class);
+            T component = strConstructor.newInstance(text);
+            return mSimpleStyler.styleComponent(component);
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            UI.showException(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Deprecated
+    public <T extends JComponent> ComponentBuilder<T> newComponentBuilder(Class<T> clazz, String text) {
+        try {
+            Constructor<T> strConstructor = clazz.getConstructor(String.class);
+            T component = strConstructor.newInstance(text);
+            T t = mSimpleStyler.styleComponent(component);
+            return UI.newComponentBuilder(t);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             UI.showException(e);
             throw new RuntimeException(e);

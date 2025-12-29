@@ -1,19 +1,19 @@
 package app.menu;
 
-import app.lib.gui.UI;
-import app.lib.io.Resources;
-import app.lib.media.Sound;
 import app.game.Game;
+import app.lib.gui.AbstractScreen;
+import app.lib.gui.UI;
 import app.lib.gui.layout.VerticalFlowLayout;
-import app.menu.abstraction.AbstractScreen;
 import app.lib.gui.style.ComponentFactory;
 import app.lib.gui.style.SimpleStyleLoader;
 import app.lib.gui.style.SimpleStyler;
+import app.lib.gui.style.Style;
+import app.lib.io.Resources;
+import app.lib.media.Sound;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
-import java.util.function.Consumer;
 
 public class Menu extends AbstractScreen {
     // swing components
@@ -32,25 +32,32 @@ public class Menu extends AbstractScreen {
         addListeners();
 
         InputStream is = Menu.class.getResourceAsStream("/menu/styles/menu_style.style");
-        SimpleStyler simpleStyler = new SimpleStyler(SimpleStyleLoader.instance.loadStyle(is));
-        simpleStyler.styleComponents(mStartGameButton, mExitButton, mSettingsButton);
-        ComponentFactory factory = new ComponentFactory(simpleStyler);
+        Style style = SimpleStyleLoader.instance.loadStyle(is);
+        SimpleStyler styler = new SimpleStyler(style);
+        ComponentFactory factory = new ComponentFactory(styler);
 
-        Consumer<JPanel> styleConsumer = p -> {
-            p.setLayout(new VerticalFlowLayout(10,10));
-            p.setPreferredSize(new Dimension(300, 500));
-            p.setBackground(new Color(50, 50, 50));
-        };
+        JLabel titleLabel = UI.newComponentBuilder(new JLabel())
+                .setText("Vouli Game")
+                .setFont(style.getFont("font").deriveFont(25f))
+                .build();
+
         JComponent[] components = {
-                factory.newComponent(JLabel.class, "Vouli Game"),
+                titleLabel,
                 mStartGameButton,
                 mSettingsButton,
                 mExitButton,
                 factory.newComponent(JLabel.class, "Version 2.4"),
                 factory.newComponent(JLabel.class, "Made by JasonTan in 6 hours.")
         };
-        components[0].setFont(components[0].getFont().deriveFont(25f));
-        add(UI.createPanel(null, styleConsumer, components), new GridBagConstraints());
+
+        styler.styleComponents(components);
+
+        addComponentBuilder(new JPanel(), new GridBagConstraints())
+                .addChildren(components)
+                .setLayout(new VerticalFlowLayout(10, 10))
+                .setSize(new Dimension(300, 500))
+                .setBackground(new Color(50, 50, 50))
+                .build();
     }
 
     private void addListeners() {

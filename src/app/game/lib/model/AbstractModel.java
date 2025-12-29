@@ -46,6 +46,17 @@ public abstract class AbstractModel implements Model {
     }
 
     @Override
+    public void move(Vector2 vec) {
+        mHitbox.pos.add(vec);
+        Vector2 p = copyPosition();
+        Size s = copySize();
+        if(p.x <= 0 || p.x+s.width >= context.width() || p.y <= 0 || p.y+s.height >= context.height()) {
+            mHitbox.pos.add(vec.scale(new Vector2(-1)));
+            onOutOfScreen();
+        }
+    }
+
+    @Override
     public void addVelocity(Vector2 acceleration) {
         mVelocity.add(acceleration);
     }
@@ -57,14 +68,14 @@ public abstract class AbstractModel implements Model {
 
     @Override
     public void update(double delta) {
-        mHitbox.pos.x += mVelocity.x*delta;
-        mHitbox.pos.y += mVelocity.y*delta;
+        move(copyVelocity().scale(new Vector2(delta)));
+        Vector2 p = copyPosition();
+        if(p.x <= 0 || p.x >= context.width() || p.y <= 0 || p.y >= context.height()) {
+            move(copyVelocity().scale(new Vector2(-delta)));
+        }
+
         if(mTempSpriteEndTime<System.currentTimeMillis()) {
             mTempSprite = null;
-        }
-        Vector2 pos = copyPosition();
-        if(pos.x < 0 || pos.x > context.width() || pos.y < 0 || pos.y > context.height()) {
-            onOutOfScreen();
         }
     }
 

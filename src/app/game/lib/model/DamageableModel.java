@@ -1,5 +1,6 @@
 package app.game.lib.model;
 
+import app.lib.gui.Vector2;
 import app.lib.media.Sound;
 import app.game.lib.Context;
 
@@ -37,7 +38,6 @@ public abstract class DamageableModel extends AbstractModel {
     public void update(double delta) {
         super.update(delta);
         if(System.currentTimeMillis() > mKillTime && mKillTime != -1) {
-
             kill();
         }
     }
@@ -48,17 +48,18 @@ public abstract class DamageableModel extends AbstractModel {
         	final long KILL_AFTER = 2000L;
             mKillTime = System.currentTimeMillis()+KILL_AFTER;
             useSprite(killSprite(), KILL_AFTER);
-            Sound.playSFX(killSound());
+            Sound.playSFX(killSound()); // TODO bad logic. store it in field.
             beforeKilled();
         }
+
         int knockbackX = copyPosition().getX() - attacker.copyPosition().getX();
         int knockbackY = copyPosition().getY() - attacker.copyPosition().getY();
-        int knockbackDiff = copySize().getWidth();
+        int knockbackDiff = (int) (copySize().getWidth()*1.5);
         if(knockbackX >= knockbackY) {
-            copyPosition().x += Integer.signum(knockbackX)*knockbackDiff;
+            move(new Vector2(Integer.signum(knockbackX)*knockbackDiff, 0));
         }
         if (knockbackY >= knockbackX){
-            copyPosition().y += Integer.signum(knockbackY)*knockbackDiff;
+            move(new Vector2(0, Integer.signum(knockbackX)*knockbackDiff));
         }
     }
 }

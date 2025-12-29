@@ -19,8 +19,18 @@ import app.lib.gui.Vector2;
 import app.lib.LazyExecutor;
 
 public final class Player extends DamageableModel {
+    private static int sScore = 0;
+
+    public static void increaseScore() {
+        sScore++;
+    }
+
+    public static int getScore() {
+        return sScore;
+    }
+
 	private final PlayerMouseListener mKeyListener = new PlayerMouseListener();
-    private final Clip mAttackSound = Resources.loadClip("/game/sound/siopi.wav");
+    private final Clip mAttackSound = Resources.loadClip("/game/ksilouris/siopi.wav");
 
     public Player(Context context) {
         super(context, 4);
@@ -36,21 +46,21 @@ public final class Player extends DamageableModel {
 
     @Override
     protected Image getSprite() {
-        return Resources.loadImage("/game/sprites/player/player.png");
+        return Resources.loadImage("/game/ksilouris/model.png");
     }
 
     @Override
     protected Clip killSound() {
-        return Resources.loadOneUseClip("/game/sound/iphone30.wav");
+        return Resources.loadOneUseClip("/game/ksilouris/iphone30.wav");
     }
 
     @Override
     protected Image killSprite() {
-        return Resources.loadImage("/game/sprites/player/player_killed.png");
+        return Resources.loadImage("/game/ksilouris/dead_model.png");
     }
 
     private final class PlayerMouseListener extends LazyExecutor implements MouseListener {
-        private final Image mAttackSprite = Resources.loadImage("/game/sprites/player/player_attack.png");
+        private final Image mAttackSprite = Resources.loadImage("/game/ksilouris/model_attack.png");
 
         public PlayerMouseListener() { super(500L); }
 
@@ -108,7 +118,7 @@ public final class Player extends DamageableModel {
 
         @Override
         protected Image getSprite() {
-            return Resources.loadImage("/game/sprites/player/frape.png");
+            return Resources.loadImage("/game/ksilouris/throwable.png");
         }
     }
 }

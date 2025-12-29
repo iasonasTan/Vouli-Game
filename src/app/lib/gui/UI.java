@@ -1,15 +1,16 @@
 package app.lib.gui;
 
-import app.lib.NotInitializedException;
+import app.lib.UtilNotInitializedException;
+import app.lib.gui.layout.VerticalFlowLayout;
 import app.lib.io.Configuration;
 import app.lib.io.InputProperties;
+import app.lib.io.Resources;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.function.Consumer;
 
 public final class UI {
     private static boolean sInitialized = false;
@@ -28,43 +29,54 @@ public final class UI {
 
     public static void check() {
         if(!sInitialized)
-            throw new NotInitializedException();
+            throw new UtilNotInitializedException();
     }
 
     public static void showException(Exception exception) {
-        JOptionPane.showMessageDialog(null, exception.getMessage()+" \n, "+ Arrays.asList(exception.getStackTrace()));
+        String messageText = String.format("""
+                        The application has a bug (%s).
+                        The reason: %s
+                        Please report this to the developer (iasonas.tan@gmail.com)
+                        """,
+                exception.getClass().getName(),
+                exception.getMessage()==null?"No details":exception.getMessage()
+        );
+        Image image = Resources.loadImage("alert.png");
+        image = image.getScaledInstance(100, 100, BufferedImage.SCALE_SMOOTH);
+        JPanel message = newComponentBuilder(new JPanel(), toJLabels((Object[]) messageText.split("\n")))
+                .setLayout(new VerticalFlowLayout(10, 10))
+                .build();
+        JOptionPane.showMessageDialog(null,  message,"Unexpected Error", JOptionPane.ERROR_MESSAGE, new ImageIcon(image));
     }
 
-    public static JPanel createPanel(JPanel parent, Consumer<JPanel> configurer, Component... comps) {
-        JPanel panel = new JPanel();
-        if(configurer!=null)
-            configurer.accept(panel);
-        for (Component comp : comps) {
-            panel.add(comp);
+    public static JLabel[] toJLabels(Object... objects) {
+        JLabel[] labels = new JLabel[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            labels[i] = new JLabel(objects[i].toString());
         }
-        if (parent != null)
-            parent.add(panel);
-        return panel;
+        return labels;
     }
 
-    public static JFrame createFrame(JPanel panel, String title, Image icon) {
-        check();
-        JFrame frame = new JFrame(title);
-        frame.setIconImage(icon);
-        frame.setContentPane(panel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setUndecorated(true);
-        if(sSystemFullScreen) {
-            GraphicsEnvironment.getLocalGraphicsEnvironment()
-                    .getDefaultScreenDevice()
-                    .setFullScreenWindow(frame);
-        } else {
-            Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-            frame.setPreferredSize(size);
-            frame.setSize(size);
+    public static <C extends JComponent> ComponentBuilder<C> newComponentBuilder(C component) {
+        return new JComponentBuilder<>(component);
+    }
+
+    public static <C extends JComponent> ComponentBuilder<C> newComponentBuilder(C component, Component... childs) {
+        for (Component child : childs) {
+            component.add(child);
         }
-        frame.setVisible(true);
-        return frame;
+        return new JComponentBuilder<>(component);
+    }
+
+    private static class JComponentBuilder<C extends JComponent> extends AbstractComponentBuilder<C> {
+        public JComponentBuilder(C comp) {
+            super(comp);
+        }
+
+        @Override
+        public C build() {
+            return component;
+        }
     }
 
     private UI() {}

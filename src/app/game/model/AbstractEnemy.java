@@ -13,18 +13,17 @@ import java.awt.*;
 
 public abstract class AbstractEnemy extends DamageableModel {
     private static final double SPEED = 0.5;
-    private final LazyExecutor mAttackExecutor = new EnemyAttacker(2000);
+    private final LazyExecutor mAttackExecutor;
     private final Clip mAttackSound;
-    //private final Class<? extends ThrowableModel> mThrowableModelType;
 
     public AbstractEnemy(Context context) {
         super(context, 3);
         mAttackSound = attackSound();
-        //mThrowableModelType = throwableModelType();
+        mAttackExecutor = new EnemyAttacker(2000, attackSprite());
     }
 
+    protected abstract String attackSprite();
     protected abstract ThrowableModel createThrowableModel(Vector2 target);
-    //protected abstract Class<? extends ThrowableModel> throwableModelType();
     protected abstract Clip attackSound();
 
     @Override
@@ -44,23 +43,35 @@ public abstract class AbstractEnemy extends DamageableModel {
     }
 
     @Override
+    protected void onKilled() {
+        super.onKilled();
+        AbstractEnemy enemy;
+        if(Math.random()*100 > 50) {
+            enemy = new Semertzidou(context);
+        } else {
+            enemy = new Konstantopoulou(context);
+        }
+        context.addModel("ENEMY_"+enemy.hashCode(), enemy.setPosition(context.randomVector()));
+        Player.increaseScore();
+    }
+
+    @Override
     protected void beforeKilled() {
         super.beforeKilled();
         mAttackSound.close();
     }
 
     private final class EnemyAttacker extends LazyExecutor {
-        private final Image mAttackSprite = Resources.loadImage("/game/sprites/enemy/enemy_attack.png");
+        private final Image mAttackSprite;
 
-        public EnemyAttacker(long delay) {
+        public EnemyAttacker(long delay, String spritePath) {
             super(delay);
+            mAttackSprite = Resources.loadImage(spritePath);
         }
 
         @Override
         protected void execute(Object... params) {
             context.getModel("_PLAYER_").ifPresent(player -> {
-                //Constructor<? extends ThrowableModel> constructor = mThrowableModelType.getConstructor(Context.class, Model.class, Vector2.class);
-                //ThrowableModel thrMod = constructor.newInstance(context, AbstractEnemy.this, player.copyPosition());
                 ThrowableModel thrMod = createThrowableModel(player.copyPosition());
                 context.addModel("thrMod"+thrMod.getClass().getName()+thrMod.hashCode(), thrMod);
                 useSprite(mAttackSprite, getBreakTime()/3);

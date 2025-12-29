@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
-public final class SimpleStyler {
+public final class SimpleStyler implements Styler {
     private final Consumer<JComponent> mStyler;
     private final Style mStyle;
 
@@ -20,14 +20,16 @@ public final class SimpleStyler {
     }
 
     @SuppressWarnings("all")
-    public JComponent[] styleComponents(JComponent... components) {
-        for (JComponent component : components) {
-            styleComponent(component.getClass(), component);
+    @Override
+    public <T extends JComponent> T[] styleComponents(T... components) {
+        for (T component : components) {
+            styleComponent(component);
         }
         return components;
     }
 
-    public <T extends JComponent> T styleComponent(Class<T> type, JComponent component) {
+    @Override
+    public <T extends JComponent> T styleComponent(T component) {
         if(mStyle != null) {
             component.setBackground(mStyle.getColor("background"));
             component.setForeground(mStyle.getColor("foreground"));
@@ -45,6 +47,6 @@ public final class SimpleStyler {
         if(mStyler!=null) {
             mStyler.accept(component);
         }
-        return type.cast(component);
+        return component;
     }
 }

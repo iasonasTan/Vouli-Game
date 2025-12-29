@@ -1,4 +1,4 @@
-package app.menu.abstraction;
+package app.lib.gui;
 
 public interface Screen {
     Screen setVisible();

@@ -1,12 +1,13 @@
-package app.lib;
+package app.lib.io;
 
-public class AlreadyInitializedException extends RuntimeException {
+@SuppressWarnings("unused")
+public class CannotLoadClipException extends RuntimeException {
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause}.
      */
-    public AlreadyInitializedException() {
+    public CannotLoadClipException() {
         super();
     }
 
@@ -18,7 +19,7 @@ public class AlreadyInitializedException extends RuntimeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public AlreadyInitializedException(String message) {
+    public CannotLoadClipException(String message) {
         super(message);
     }
 
@@ -36,7 +37,7 @@ public class AlreadyInitializedException extends RuntimeException {
      *                unknown.)
      * @since 1.4
      */
-    public AlreadyInitializedException(String message, Throwable cause) {
+    public CannotLoadClipException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -53,7 +54,7 @@ public class AlreadyInitializedException extends RuntimeException {
      *              unknown.)
      * @since 1.4
      */
-    public AlreadyInitializedException(Throwable cause) {
+    public CannotLoadClipException(Throwable cause) {
         super(cause);
     }
 
@@ -71,7 +72,7 @@ public class AlreadyInitializedException extends RuntimeException {
      *                           be writable
      * @since 1.7
      */
-    protected AlreadyInitializedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected CannotLoadClipException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

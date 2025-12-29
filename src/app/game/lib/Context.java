@@ -1,6 +1,7 @@
 package app.game.lib;
 
 import app.game.lib.model.Model;
+import app.lib.gui.Vector2;
 
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -21,6 +22,8 @@ public interface Context extends Runnable {
 
     float width();
     float height();
+    Vector2 randomVector();
+
     void exitGame();
     void stopGameThread();
 }

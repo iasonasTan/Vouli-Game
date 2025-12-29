@@ -1,3 +1,4 @@
 Press W,A,S,D to move.
 Press SPACE or click with the mouse to fire.
 Kill as manu enemies as you can.
+Don't touch the enemy!

@@ -1,7 +1,7 @@
 package app.lib.io;
 
-import app.lib.AlreadyInitializedException;
-import app.lib.NotInitializedException;
+import app.lib.UtilAlreadyInitializedException;
+import app.lib.UtilNotInitializedException;
 import app.lib.gui.UI;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public final class Configuration {
      */
     public static void init(String appName) {
         if(sConfigDirectory!=null)
-            throw new AlreadyInitializedException();
+            throw new UtilAlreadyInitializedException();
         Path systemConfigDir;
         String osName = System.getProperty("os.name").toLowerCase();
         String userHome = System.getProperty("user.home");
@@ -119,7 +119,7 @@ public final class Configuration {
      */
     private static void check() {
         if(sConfigDirectory == null)
-            throw new NotInitializedException();
+            throw new UtilNotInitializedException();
     }
 
     private Configuration(){}

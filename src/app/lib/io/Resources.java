@@ -7,17 +7,28 @@ import java.io.IOException;
 import java.net.URL;
 
 public final class Resources {
+    private static BufferedImage mCannotLoadImage;
+
+    @SuppressWarnings("all")
+    public static void init() {
+        try {
+            mCannotLoadImage = ImageIO.read(Resources.class.getResourceAsStream("cannotloadimage.png"));
+        } catch (IOException e) {
+            // ignore
+        }
+    }
+
     public static BufferedImage loadImage(String path) {
         try {
             URL rsrcUrl = Resources.class.getResource(path);
             if (rsrcUrl == null) {
                 System.err.println("Failed to get image " + path);
-                return null;
+                return mCannotLoadImage;
             }
-            return ImageIO.read(rsrcUrl);
+            BufferedImage image = ImageIO.read(rsrcUrl);
+            return image == null ? mCannotLoadImage : image;
         } catch (IOException e) {
-            System.err.println("Failed to get image " + path);
-            return null;
+            return mCannotLoadImage;
         }
     }
 
@@ -34,7 +45,7 @@ public final class Resources {
             return clip;
         } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
             System.err.println("Failed to load sound " + path + " (Exception thrown)");
-            return null;
+            throw new CannotLoadClipException();
         }
     }
 

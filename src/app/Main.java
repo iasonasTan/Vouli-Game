@@ -11,6 +11,7 @@ import javax.sound.sampled.Clip;
 public class Main {
     public static void main(String[] args) {
         Configuration.init("vouli_game");
+        Resources.init();
 
         initUtils();
 
@@ -21,7 +22,7 @@ public class Main {
         UI.load();
         Sound.load();
 
-        Clip music = Resources.loadClip("/game/sound/background_music.wav");
+        Clip music = Resources.loadClip("/game/background_music.wav");
         Sound.playMusic(music);
     }
 }

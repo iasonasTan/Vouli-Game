@@ -2,7 +2,8 @@ package app.lib;
 
 import java.security.PrivilegedActionException;
 
-public class NotInitializedException extends RuntimeException {
+@SuppressWarnings("unused")
+public class UtilNotInitializedException extends RuntimeException {
     /**
      * Constructs a new throwable with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
@@ -11,7 +12,7 @@ public class NotInitializedException extends RuntimeException {
      * <p>The {@link #fillInStackTrace()} method is called to initialize
      * the stack trace data in the newly created throwable.
      */
-    public NotInitializedException() {
+    public UtilNotInitializedException() {
         super();
     }
 
@@ -26,7 +27,7 @@ public class NotInitializedException extends RuntimeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public NotInitializedException(String message) {
+    public UtilNotInitializedException(String message) {
         super(message);
     }
 
@@ -47,7 +48,7 @@ public class NotInitializedException extends RuntimeException {
      *                unknown.)
      * @since 1.4
      */
-    public NotInitializedException(String message, Throwable cause) {
+    public UtilNotInitializedException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -55,8 +56,8 @@ public class NotInitializedException extends RuntimeException {
      * Constructs a new throwable with the specified cause and a detail
      * message of {@code (cause==null ? null : cause.toString())} (which
      * typically contains the class and detail message of {@code cause}).
-     * This constructor is useful for throwables that are little more than
-     * wrappers for other throwables (for example, {@link
+     * This constructor is useful for throwable that are little more than
+     * wrappers for other throwable (for example, {@link
      * PrivilegedActionException}).
      *
      * <p>The {@link #fillInStackTrace()} method is called to initialize
@@ -68,7 +69,7 @@ public class NotInitializedException extends RuntimeException {
      *              unknown.)
      * @since 1.4
      */
-    public NotInitializedException(Throwable cause) {
+    public UtilNotInitializedException(Throwable cause) {
         super(cause);
     }
 
@@ -104,15 +105,15 @@ public class NotInitializedException extends RuntimeException {
      * @param message            the detail message.
      * @param cause              the cause.  (A {@code null} value is permitted,
      *                           and indicates that the cause is nonexistent or unknown.)
-     * @param enableSuppression  whether or not suppression is enabled or disabled
-     * @param writableStackTrace whether or not the stack trace should be
+     * @param enableSuppression  whether suppression is enabled or disabled
+     * @param writableStackTrace whether the stack trace should be
      *                           writable
      * @see OutOfMemoryError
      * @see NullPointerException
      * @see ArithmeticException
      * @since 1.7
      */
-    protected NotInitializedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected UtilNotInitializedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

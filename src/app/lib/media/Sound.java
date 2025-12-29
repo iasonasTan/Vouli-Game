@@ -1,6 +1,6 @@
 package app.lib.media;
 
-import app.lib.NotInitializedException;
+import app.lib.UtilNotInitializedException;
 import app.lib.io.InputProperties;
 import app.lib.io.Configuration;
 import app.lib.gui.UI;
@@ -27,7 +27,7 @@ public final class Sound {
 
     private static void check() {
         if(!sInitialized)
-            throw new NotInitializedException();
+            throw new UtilNotInitializedException();
     }
 
     public static void playSFX(Clip clip) {

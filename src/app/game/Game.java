@@ -3,6 +3,8 @@ package app.game;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 
@@ -14,14 +16,13 @@ import app.game.lib.model.AbstractModel;
 import app.lib.io.Resources;
 import app.lib.gui.Vector2;
 import app.menu.GameOverScreen;
-import app.menu.abstraction.AbstractScreen;
+import app.lib.gui.AbstractScreen;
 
 // TODO add score
 // TODO add save score
 
 public class Game extends AbstractScreen implements Context {
-    private final Map<String, Model> mModels = new HashMap<>();
-    private final Map<String, Model> mModelsBuff = new HashMap<>();
+    private final Map<String, Model> mModels = new HashMap<>(), mModelsBuff = new HashMap<>();
     private final Image mBackground = Resources.loadImage("/background.jpg");
     private boolean mRunning = false;
     private Thread mThread;
@@ -33,7 +34,14 @@ public class Game extends AbstractScreen implements Context {
         addKeyListener(new Listener());
     	
         addModel("_PLAYER_", new Player(this));
-        addModel("_ENEMY_", new Konstantopoulou(this).setPosition(new Vector2(500, 500)));
+        addModel("_KONSTANTOPOULOU_", new Konstantopoulou(this).setPosition(new Vector2(500, 500)));
+    }
+
+    @Override
+    public Vector2 randomVector() {
+        int x = (int)(Math.random()*width());
+        int y = (int)(Math.random()*height());
+        return new Vector2(x, y);
     }
 
     private final class Listener implements KeyListener {
@@ -177,14 +185,27 @@ public class Game extends AbstractScreen implements Context {
         });
     }
 
+    private void configureGraphics(Graphics g) {
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/menu/fonts/ibm_plex_serif_bold.ttf");
+            if(inputStream==null) return;
+            Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            g.setFont(font.deriveFont(25f));
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void render() {
         repaint();
         paintImmediately(getVisibleRect());
     }
 
     @Override
-    protected void paintComponent(final java.awt.Graphics graphics) {
+    protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        configureGraphics(graphics);
+
         graphics.drawImage(mBackground, 0, 0, (int)width(), (int)height(), null);
 
         List<Model> models = new ArrayList<>(mModels.values());
@@ -196,7 +217,9 @@ public class Game extends AbstractScreen implements Context {
         graphics.setColor(Color.BLUE);
         Point mousePos = MouseInfo.getPointerInfo().getLocation();
         graphics.fillOval(mousePos.x-20, mousePos.y-20, 40, 40);
+
         graphics.setColor(Color.WHITE);
+        graphics.drawString("Score: "+ Player.getScore(), 10, 40);
 
         graphics.dispose();
     }

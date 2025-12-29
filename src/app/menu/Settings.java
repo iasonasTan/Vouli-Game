@@ -7,7 +7,7 @@ import app.lib.gui.layout.VerticalFlowLayout;
 import app.lib.io.InputProperties;
 import app.lib.io.OutputProperties;
 import app.lib.io.Resources;
-import app.menu.abstraction.AbstractScreen;
+import app.lib.gui.AbstractScreen;
 import app.lib.gui.style.SimpleStyleLoader;
 import app.lib.gui.style.SimpleStyler;
 
@@ -16,7 +16,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.function.Consumer;
 
 class Settings extends AbstractScreen {
     private final JButton mExitButton = new JButton("Save And Exit"),
@@ -44,26 +43,30 @@ class Settings extends AbstractScreen {
 
     private void initSwing() {
         InputStream is = Menu.class.getResourceAsStream("/menu/styles/settings_style.style");
-        SimpleStyler simpleStyler = new SimpleStyler(SimpleStyleLoader.instance.loadStyle(is));
-        simpleStyler.styleComponents(mExitButton, mSysFullScrCheckBox, mEnableMusicCheckBox, mEnableSFXCheckBox, mShowInstructionsButton);
+        SimpleStyler styler = new SimpleStyler(SimpleStyleLoader.instance.loadStyle(is));
 
         setLayout(new GridBagLayout());
-        Consumer<JPanel> styleConsumer = p -> {
-            p.setLayout(new VerticalFlowLayout(10, 10));
-            p.setPreferredSize(new Dimension(520, 500));
-            p.setBackground(new Color(50, 50, 50));
-        };
-        JComponent[] components = {
-                mSysFullScrCheckBox, mEnableMusicCheckBox, mEnableSFXCheckBox, mShowInstructionsButton, mExitButton,
-                new JTextField("Changes to some settings will take \neffect after restarting the application.")
-        };
-        add(UI.createPanel(null, styleConsumer, components), new GridBagConstraints());
+
+        JTextField warningField = UI.newComponentBuilder(new JTextField("Changes to some settings will take \neffect after restarting the application."))
+                .setEditable(false)
+                .setBackground(Color.RED)
+                .setForeground(Color.WHITE)
+                .build();
+
+        JComponent[] components = {mSysFullScrCheckBox, mEnableMusicCheckBox, mEnableSFXCheckBox, mShowInstructionsButton, mExitButton};
+
+        styler.styleComponents(components);
+
+        addComponentBuilder(new JPanel(), new GridBagConstraints())
+                .setSize(new Dimension(520, 500))
+                .setLayout(new VerticalFlowLayout(10, 10))
+                .setBackground(new Color(50, 50, 50))
+                .addChildren(components)
+                .addChildren(warningField)
+                .build();
+
         mExitButton.addActionListener(new OnExitListener());
         mShowInstructionsButton.addActionListener(OnShowInstructionsListener.fromResource("/instructions.txt"));
-        JTextField field = (JTextField) components[5];
-        field.setEditable(false);
-        field.setBackground(Color.RED);
-        field.setForeground(Color.WHITE);
     }
 
     private static final class OnShowInstructionsListener implements ActionListener {
@@ -124,12 +127,5 @@ class Settings extends AbstractScreen {
     @Override
     protected Image icon() {
         return Resources.loadImage("/app_icon.png");
-    }
-
-    @Override
-    public AbstractScreen setVisible() {
-        super.setVisible();
-        setPreferredSize(getFrame().getSize());
-        return this;
     }
 }

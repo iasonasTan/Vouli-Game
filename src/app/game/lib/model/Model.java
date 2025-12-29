@@ -10,6 +10,8 @@ import java.awt.*;
 public interface Model {
     Model setPosition(Vector2 position);
     Model setSize(Size size);
+
+    void move(Vector2 vec);
     void addVelocity(Vector2 acceleration);
 
     Vector2 copyPosition();
