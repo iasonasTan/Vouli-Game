@@ -2,7 +2,6 @@ package app.lib;
 
 import java.security.PrivilegedActionException;
 
-@SuppressWarnings("unused")
 public class UtilNotInitializedException extends RuntimeException {
     /**
      * Constructs a new throwable with {@code null} as its detail message.

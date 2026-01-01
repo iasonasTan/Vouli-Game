@@ -1,9 +1,8 @@
-package app.lib.gui;
+package app.lib.game;
 
 /**
  * <b>Not</b> working in <i>hash collections</i>
  */
-@SuppressWarnings("unused")
 public final class Size {
     public float width, height;
 

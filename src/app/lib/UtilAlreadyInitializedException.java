@@ -1,6 +1,5 @@
 package app.lib;
 
-@SuppressWarnings("unused")
 public class UtilAlreadyInitializedException extends RuntimeException {
     /**
      * Constructs a new runtime exception with {@code null} as its

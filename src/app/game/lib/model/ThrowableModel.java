@@ -1,8 +1,8 @@
 package app.game.lib.model;
 
 import app.game.lib.Context;
-import app.lib.gui.Size;
-import app.lib.gui.Vector2;
+import app.lib.game.Size;
+import app.lib.game.Vector2;
 
 import java.util.Optional;
 
@@ -13,22 +13,22 @@ public abstract class ThrowableModel extends AbstractModel {
         super(context);
         mParent = parent;
         setPosition(parent.copyPosition());
-        calculateVelocity(target);
+        calculateVelocity(target, parent.copyVelocity());
         setSize(new Size(50, 50));
     }
     
-    private void calculateVelocity(Vector2 target) {
+    private void calculateVelocity(Vector2 target, Vector2 velocityObj) {
         double diffX = target.x - copyPosition().x;
         double diffY = target.y - copyPosition().y;
         float length = (float)Math.sqrt(diffX * diffX + diffY * diffY);
 
         Vector2 vel = new Vector2(diffX / length, diffY / length);
-        float VELOCITY = 5;
-        vel.x *= VELOCITY;
-        vel.y *= VELOCITY;
+        double parentVelocity = Math.abs(velocityObj.x) + Math.abs(velocityObj.y);
+        double velocity = Math.max(10, parentVelocity);
+        vel.x *= velocity;
+        vel.y *= velocity;
         addVelocity(vel);
     }
-
 
     @Override
     public void update(double delta) {

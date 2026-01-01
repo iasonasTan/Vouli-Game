@@ -1,72 +1,92 @@
 package app.game.model;
 
 import app.game.lib.model.DamageableModel;
+import app.game.lib.model.Model;
 import app.game.lib.model.ThrowableModel;
-import app.lib.io.Resources;
 import app.lib.media.Sound;
 import app.game.lib.Context;
-import app.lib.gui.Vector2;
+import app.lib.game.Vector2;
 import app.lib.LazyExecutor;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
 
 public abstract class AbstractEnemy extends DamageableModel {
-    private static final double SPEED = 0.5;
+    private static double sSpeed = 0.3;
+
+    public static void increaseSpeed() {
+        sSpeed += 0.1;
+    }
+
+    private Image mOnAttackSprite;
+    private Clip mOnAttackClip;
     private final LazyExecutor mAttackExecutor;
-    private final Clip mAttackSound;
 
     public AbstractEnemy(Context context) {
         super(context, 3);
-        mAttackSound = attackSound();
-        mAttackExecutor = new EnemyAttacker(2000, attackSprite());
+        mAttackExecutor = new EnemyAttacker(2000);
+        loadResources();
     }
 
-    protected abstract String attackSprite();
+    private void loadResources() {
+        new Thread(() -> {
+            mOnAttackSprite = attackSprite();
+            mOnAttackClip = attackSound();
+        }).start();
+    }
+
+    protected abstract Image attackSprite();
     protected abstract ThrowableModel createThrowableModel(Vector2 target);
     protected abstract Clip attackSound();
 
     @Override
     public void update(double delta) {
         super.update(delta);
-        context.getModel("_PLAYER_").ifPresent(player -> {
-            Vector2 newVel = new Vector2();
-            newVel.x = Math.signum(player.copyPosition().x - copyPosition().x)*SPEED;
-            newVel.y = Math.signum(player.copyPosition().y - copyPosition().y)*SPEED;
-            setVelocity(newVel);
-            if(hasCollisionWith(player)) {
-                DamageableModel damageable = (DamageableModel) player;
-                damageable.damage(this);
-            }
-        });
+        context.getModel("_PLAYER_").ifPresent(this::followModel);
         mAttackExecutor.requestExecute();
+    }
+
+    protected void followModel(Model player) {
+        Vector2 newVel = new Vector2();
+        final int REQUIRED_DIFF = 15;
+        double diffX = player.copyPosition().x - copyPosition().x;
+        double diffY = player.copyPosition().y - copyPosition().y;
+        if(Math.abs(diffX) > REQUIRED_DIFF)
+            newVel.x = Math.signum(diffX)*sSpeed;
+        if(Math.abs(diffY) > REQUIRED_DIFF)
+            newVel.y = Math.signum(diffY)*sSpeed;
+        setVelocity(newVel);
+        if(hasCollisionWith(player)) {
+            DamageableModel damageable = (DamageableModel)player;
+            damageable.damage(this);
+        }
     }
 
     @Override
     protected void onKilled() {
         super.onKilled();
-        AbstractEnemy enemy;
-        if(Math.random()*100 > 50) {
-            enemy = new Semertzidou(context);
-        } else {
-            enemy = new Konstantopoulou(context);
-        }
-        context.addModel("ENEMY_"+enemy.hashCode(), enemy.setPosition(context.randomVector()));
-        Player.increaseScore();
+        new Thread(() -> {
+            AbstractEnemy enemy;
+            if(Math.random()*100 > 50) {
+                enemy = new Semertzidou(context);
+            } else {
+                enemy = new Konstantopoulou(context);
+            }
+            context.addModel("ENEMY_"+enemy.hashCode(), enemy.setPosition(context.randomVector(enemy)));
+            context.getModel("_PLAYER_", Player.class).ifPresent(player -> player.getScoreMan().increaseScore());
+            increaseSpeed();
+        }).start();
     }
 
     @Override
     protected void beforeKilled() {
         super.beforeKilled();
-        mAttackSound.close();
+        mOnAttackClip.close();
     }
 
     private final class EnemyAttacker extends LazyExecutor {
-        private final Image mAttackSprite;
-
-        public EnemyAttacker(long delay, String spritePath) {
+        public EnemyAttacker(long delay) {
             super(delay);
-            mAttackSprite = Resources.loadImage(spritePath);
         }
 
         @Override
@@ -74,8 +94,8 @@ public abstract class AbstractEnemy extends DamageableModel {
             context.getModel("_PLAYER_").ifPresent(player -> {
                 ThrowableModel thrMod = createThrowableModel(player.copyPosition());
                 context.addModel("thrMod"+thrMod.getClass().getName()+thrMod.hashCode(), thrMod);
-                useSprite(mAttackSprite, getBreakTime()/3);
-                Sound.playSFX(mAttackSound);
+                useSprite(mOnAttackSprite, getBreakTime()/3);
+                Sound.playSFX(mOnAttackClip);
             });
         }
     }

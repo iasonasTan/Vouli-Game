@@ -1,8 +1,8 @@
 package app.lib.gui.style;
 
 import app.lib.io.InputProperties;
+import app.lib.io.Resources;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class SimpleStyleLoader implements StyleLoader {
-    public static SimpleStyleLoader instance = new SimpleStyleLoader();
+    public static final SimpleStyleLoader instance = new SimpleStyleLoader();
 
     @Override
     public Style loadStyle(String path) {
@@ -20,13 +20,14 @@ public final class SimpleStyleLoader implements StyleLoader {
 
     @Override
     public Style loadStyle(InputStream input) {
-        InputProperties styleProperties = new InputProperties(input);
+        InputProperties styleProperties = new InputProperties();
+        styleProperties.load(input);
         Map<String, Object> style = new HashMap<>();
 
         // images
         String imagePath = styleProperties.getString("image");
         if(imagePath != null)
-            style.put("image", loadImage(imagePath));
+            style.put("image", Resources.loadImage(imagePath, SimpleStyleLoader.class));
         else
             style.put("image", null);
 
@@ -54,29 +55,6 @@ public final class SimpleStyleLoader implements StyleLoader {
         }
         style.put("font", font);
         return new MapStyle(style);
-    }
-
-    private static Image loadImage(String backgroundImage) {
-        try (InputStream inputStream = SimpleStyleLoader.class.getResourceAsStream(backgroundImage)){
-            if(inputStream==null)
-                throw new NullPointerException();
-            Image image = ImageIO.read(inputStream);
-            if(image != null)
-                return image;
-            else
-                return loadWarningImage();
-        } catch (IOException | NullPointerException e) {
-            return loadWarningImage();
-        }
-    }
-
-    private static Image loadWarningImage() {
-        try(InputStream is=SimpleStyleLoader.class.getResourceAsStream("image_error.png")) {
-            // noinspection all
-            return ImageIO.read(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

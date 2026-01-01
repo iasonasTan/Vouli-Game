@@ -1,4 +1,4 @@
-package app.lib.gui;
+package app.lib.game;
 
 import java.awt.*;
 

@@ -53,6 +53,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent> implements 
     public ComponentBuilder<C> setEditable(boolean editable) {
         if(component instanceof JTextField field)
             field.setEditable(editable);
+        if(component instanceof JTextArea area)
+            area.setEditable(editable);
         return this;
     }
 

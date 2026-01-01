@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@SuppressWarnings("unused")
 public class InputProperties {
-    private final Properties mProperties = new Properties();
+    private Properties mProperties = null;
 
-    public InputProperties(InputStream inputStream) {
+    public void load(InputStream inputStream) {
         try {
+            mProperties = new Properties();
             mProperties.load(inputStream);
         } catch (IOException e) {
             UI.showException(e);
@@ -20,6 +20,8 @@ public class InputProperties {
     }
 
     public String getString(String key) {
+        if(mProperties == null)
+            throw new IllegalStateException("No data loaded.");
         return mProperties.getProperty(key);
     }
 
@@ -27,23 +29,34 @@ public class InputProperties {
         String value = getString(key);
         if(value == null)
             return defaultValue;
-        else
-            return Boolean.parseBoolean(getString(key));
+        return Boolean.parseBoolean(getString(key));
     }
 
     public int getInteger(String key, int defaultValue) throws NumberFormatException {
         String value = getString(key);
         if(value == null)
             return defaultValue;
-        else
-            return Integer.parseInt(getString(key));
+        return Integer.parseInt(getString(key));
+    }
+
+    public long getLong(String key, long defaultValue) throws NumberFormatException {
+        String value = getString(key);
+        if(value==null)
+            return defaultValue;
+        return Long.parseLong(value);
     }
 
     public float getFloat(String key, float defaultValue) throws NumberFormatException {
         String value = getString(key);
         if(value == null)
             return defaultValue;
-        else
-            return Float.parseFloat(getString(key));
+        return Float.parseFloat(getString(key));
+    }
+
+    public double getDouble(String key, double defaultValue) throws NumberFormatException {
+        String value = getString(key);
+        if(value == null)
+            return defaultValue;
+        return Double.parseDouble(value);
     }
 }

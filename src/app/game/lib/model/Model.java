@@ -1,12 +1,11 @@
 package app.game.lib.model;
 
-import app.lib.gui.Hitbox;
-import app.lib.gui.Size;
-import app.lib.gui.Vector2;
+import app.lib.game.Hitbox;
+import app.lib.game.Size;
+import app.lib.game.Vector2;
 
 import java.awt.*;
 
-@SuppressWarnings("unused")
 public interface Model {
     Model setPosition(Vector2 position);
     Model setSize(Size size);

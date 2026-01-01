@@ -1,7 +1,6 @@
 package app.lib.gui;
 
 import app.lib.UtilNotInitializedException;
-import app.lib.gui.layout.VerticalFlowLayout;
 import app.lib.io.Configuration;
 import app.lib.io.InputProperties;
 import app.lib.io.Resources;
@@ -9,22 +8,16 @@ import app.lib.io.Resources;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 
 public final class UI {
     private static boolean sInitialized = false;
     public static boolean sSystemFullScreen = false;
 
-    public static void load() {
-        try (InputStream inputStream = Configuration.getConfigInputStream("settings.properties", true)) {
-            InputProperties properties = new InputProperties(inputStream);
-            sSystemFullScreen = properties.getBoolean("sys_full_scr", true);
-            sInitialized = true;
-        } catch (IOException e) {
-            UI.showException(e);
-            throw new RuntimeException(e);
-        }
+    public static void init() {
+        InputProperties properties = new InputProperties();
+        Configuration.loadProperties("settings.properties", properties);
+        sSystemFullScreen = properties.getBoolean("sys_full_scr", true);
+        sInitialized = true;
     }
 
     public static void check() {
@@ -34,35 +27,49 @@ public final class UI {
 
     public static void showException(Exception exception) {
         String messageText = String.format("""
-                        The application has a bug (%s).
-                        The reason: %s
-                        Please report this to the developer (iasonas.tan@gmail.com)
+                        The application has a bug "%s: %s".
+                        
+                        Stacktrace:
+                        %s
+                        Please send this to the developer (iasonas.tan@gmail.com)
                         """,
                 exception.getClass().getName(),
-                exception.getMessage()==null?"No details":exception.getMessage()
+                exception.getMessage()==null?"No message details.":exception.getLocalizedMessage(),
+                stacktraceToString(exception.getStackTrace())
         );
-        Image image = Resources.loadImage("alert.png");
+        Image image = Resources.loadImage("alert.png", UI.class);
         image = image.getScaledInstance(100, 100, BufferedImage.SCALE_SMOOTH);
-        JPanel message = newComponentBuilder(new JPanel(), toJLabels((Object[]) messageText.split("\n")))
-                .setLayout(new VerticalFlowLayout(10, 10))
+        JTextArea textArea = UI.newComponentBuilder(new JTextArea())
+                .setEditable(false)
+                .setText(messageText)
                 .build();
-        JOptionPane.showMessageDialog(null,  message,"Unexpected Error", JOptionPane.ERROR_MESSAGE, new ImageIcon(image));
+        JPanel panel = UI.newComponentBuilder(new JPanel())
+                .addChildren(textArea)
+                .setLayout(new FlowLayout())
+                .build();
+        JOptionPane.showMessageDialog(null, panel, "Unexpected Error", JOptionPane.ERROR_MESSAGE, new ImageIcon(image));
     }
 
-    public static JLabel[] toJLabels(Object... objects) {
-        JLabel[] labels = new JLabel[objects.length];
-        for (int i = 0; i < objects.length; i++) {
-            labels[i] = new JLabel(objects[i].toString());
+    private static String stacktraceToString(StackTraceElement[] stackTrace) {
+        StringBuilder messageBuilder = new StringBuilder();
+        for (StackTraceElement stackTraceElement: stackTrace) {
+            messageBuilder
+                    .append(stackTraceElement.toString())
+                    .append('\n');
         }
-        return labels;
+        return messageBuilder.toString();
     }
 
     public static <C extends JComponent> ComponentBuilder<C> newComponentBuilder(C component) {
         return new JComponentBuilder<>(component);
     }
 
-    public static <C extends JComponent> ComponentBuilder<C> newComponentBuilder(C component, Component... childs) {
-        for (Component child : childs) {
+    /**
+     * @deprecated Use {@link ComponentBuilder#addChildren(JComponent...)} for adding children.
+     */
+    @Deprecated
+    public static <C extends JComponent> ComponentBuilder<C> newComponentBuilder(C component, Component... children) {
+        for (Component child : children) {
             component.add(child);
         }
         return new JComponentBuilder<>(component);

@@ -1,6 +1,5 @@
 package app.lib.io;
 
-@SuppressWarnings("unused")
 public class CannotLoadClipException extends RuntimeException {
     /**
      * Constructs a new runtime exception with {@code null} as its

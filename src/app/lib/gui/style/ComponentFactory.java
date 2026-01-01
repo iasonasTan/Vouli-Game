@@ -8,9 +8,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public final class ComponentFactory {
-    private final SimpleStyler mSimpleStyler;
+    private final Styler mSimpleStyler;
 
-    public ComponentFactory(SimpleStyler mSimpleStyler) {
+    public ComponentFactory(Styler mSimpleStyler) {
         this.mSimpleStyler = mSimpleStyler;
     }
 
@@ -25,11 +25,21 @@ public final class ComponentFactory {
         }
     }
 
-    @Deprecated
-    public <T extends JComponent> ComponentBuilder<T> newComponentBuilder(Class<T> clazz, String text) {
+    public <T extends JComponent> T newComponent(Class<T> clazz) {
         try {
-            Constructor<T> strConstructor = clazz.getConstructor(String.class);
-            T component = strConstructor.newInstance(text);
+            Constructor<T> strConstructor = clazz.getConstructor();
+            T component = strConstructor.newInstance();
+            return mSimpleStyler.styleComponent(component);
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            UI.showException(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T extends JComponent> ComponentBuilder<T> newComponentBuilder(Class<T> clazz) {
+        try {
+            Constructor<T> strConstructor = clazz.getConstructor();
+            T component = strConstructor.newInstance();
             T t = mSimpleStyler.styleComponent(component);
             return UI.newComponentBuilder(t);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {

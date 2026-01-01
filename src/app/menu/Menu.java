@@ -1,13 +1,11 @@
 package app.menu;
 
+import app.Main;
 import app.game.Game;
 import app.lib.gui.AbstractScreen;
 import app.lib.gui.UI;
 import app.lib.gui.layout.VerticalFlowLayout;
-import app.lib.gui.style.ComponentFactory;
-import app.lib.gui.style.SimpleStyleLoader;
-import app.lib.gui.style.SimpleStyler;
-import app.lib.gui.style.Style;
+import app.lib.gui.style.*;
 import app.lib.io.Resources;
 import app.lib.media.Sound;
 
@@ -23,7 +21,7 @@ public class Menu extends AbstractScreen {
 
     public Menu() {
         initSwing();
-        UI.load();
+        UI.init();
         Sound.load();
     }
 
@@ -31,28 +29,29 @@ public class Menu extends AbstractScreen {
         setLayout(new GridBagLayout());
         addListeners();
 
-        InputStream is = Menu.class.getResourceAsStream("/menu/styles/menu_style.style");
+        InputStream is = Menu.class.getResourceAsStream("/res/menu/styles/menu_style.style");
         Style style = SimpleStyleLoader.instance.loadStyle(is);
-        SimpleStyler styler = new SimpleStyler(style);
+        Styler styler = new SimpleStyler(style);
         ComponentFactory factory = new ComponentFactory(styler);
 
         JLabel titleLabel = UI.newComponentBuilder(new JLabel())
+                .style(styler)
                 .setText("Vouli Game")
-                .setFont(style.getFont("font").deriveFont(25f))
+                .setFont(style.getFont("font").deriveFont(24f))
                 .build();
 
         JComponent[] components = {
-                titleLabel,
                 mStartGameButton,
                 mSettingsButton,
                 mExitButton,
-                factory.newComponent(JLabel.class, "Version 2.4"),
+                factory.newComponent(JLabel.class, "Version "+ Main.APPLICATION_VERSION),
                 factory.newComponent(JLabel.class, "Made by JasonTan in 6 hours.")
         };
 
         styler.styleComponents(components);
 
         addComponentBuilder(new JPanel(), new GridBagConstraints())
+                .addChildren(titleLabel)
                 .addChildren(components)
                 .setLayout(new VerticalFlowLayout(10, 10))
                 .setSize(new Dimension(300, 500))
@@ -87,11 +86,11 @@ public class Menu extends AbstractScreen {
 
     @Override
     protected Image background() {
-        return Resources.loadImage("/background.jpg");
+        return Resources.loadImage("/res/background.jpg");
     }
 
     @Override
     protected Image icon() {
-        return Resources.loadImage("/app_icon.png");
+        return Resources.loadImage("/res/app_icon.png");
     }
 }

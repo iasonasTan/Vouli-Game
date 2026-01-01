@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unused")
 public final class SimpleStyler implements Styler {
     private final Consumer<JComponent> mStyler;
     private final Style mStyle;
@@ -19,9 +18,9 @@ public final class SimpleStyler implements Styler {
         mStyle = style;
     }
 
-    @SuppressWarnings("all")
+    @SafeVarargs
     @Override
-    public <T extends JComponent> T[] styleComponents(T... components) {
+    public final <T extends JComponent> T[] styleComponents(T... components) {
         for (T component : components) {
             styleComponent(component);
         }

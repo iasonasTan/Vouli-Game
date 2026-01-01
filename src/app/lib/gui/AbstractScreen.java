@@ -53,7 +53,6 @@ public abstract class AbstractScreen extends JPanel implements Screen {
             sFrame = createFrame(this, title(), icon());
 
         setPreferredSize(sFrame.getSize());
-        System.out.println(sFrame.getSize());
         sFrame.setContentPane(this);
         sFrame.setTitle(title());
         sFrame.setIconImage(icon());
@@ -80,6 +79,9 @@ public abstract class AbstractScreen extends JPanel implements Screen {
         return new ComponentAdderBuilder<>(comp, param);
     }
 
+    /**
+     * @deprecated Use {@link ComponentBuilder#addChildren(JComponent...)} for adding children.
+     */
     @Deprecated
     public <C extends JComponent> ComponentBuilder<C> addComponentBuilder(C comp, Object param, JComponent... children) {
         return new ComponentAdderBuilder<>(comp, param, children);

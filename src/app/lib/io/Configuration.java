@@ -2,11 +2,11 @@ package app.lib.io;
 
 import app.lib.UtilAlreadyInitializedException;
 import app.lib.UtilNotInitializedException;
-import app.lib.gui.UI;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,8 +47,7 @@ public final class Configuration {
             try {
                 Files.createDirectories(configDir);
             } catch (IOException e) {
-                UI.showException(e);
-                throw new RuntimeException(e);
+                throw new UncheckedIOException("Cannot create configuration directory.", e);
             }
         }
         sConfigDirectory = configDir.toAbsolutePath().toString();
@@ -66,8 +65,7 @@ public final class Configuration {
         try {
             return Files.newOutputStream(createConfigFile(path));
         } catch (IOException e) {
-            UI.showException(e);
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -87,8 +85,7 @@ public final class Configuration {
         try {
             return Files.newInputStream(out);
         } catch (IOException e) {
-            UI.showException(e);
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -106,10 +103,25 @@ public final class Configuration {
                 Files.createFile(out);
             }
         } catch (IOException e) {
-            UI.showException(e);
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         return out;
+    }
+
+    public static void loadProperties(String filePath, InputProperties properties) {
+        try(InputStream inputStream = getConfigInputStream(filePath, true)) {
+             properties.load(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void storeProperties(String filePath, OutputProperties properties) {
+        try (OutputStream stream = getConfigOutputStream(filePath)) {
+            properties.store(stream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     /**

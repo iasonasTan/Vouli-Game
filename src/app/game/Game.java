@@ -14,16 +14,13 @@ import app.game.lib.model.Model;
 import app.game.model.Player;
 import app.game.lib.model.AbstractModel;
 import app.lib.io.Resources;
-import app.lib.gui.Vector2;
+import app.lib.game.Vector2;
 import app.menu.GameOverScreen;
 import app.lib.gui.AbstractScreen;
 
-// TODO add score
-// TODO add save score
-
 public class Game extends AbstractScreen implements Context {
     private final Map<String, Model> mModels = new HashMap<>(), mModelsBuff = new HashMap<>();
-    private final Image mBackground = Resources.loadImage("/background.jpg");
+    private final Image mBackground = Resources.loadImage("/res/background.jpg");
     private boolean mRunning = false;
     private Thread mThread;
 
@@ -38,9 +35,9 @@ public class Game extends AbstractScreen implements Context {
     }
 
     @Override
-    public Vector2 randomVector() {
-        int x = (int)(Math.random()*width());
-        int y = (int)(Math.random()*height());
+    public Vector2 randomVector(Model model) {
+        int x = (int)(Math.random()*(width()-model.copySize().width));
+        int y = (int)(Math.random()*(height()-model.copySize().height));
         return new Vector2(x, y);
     }
 
@@ -71,12 +68,12 @@ public class Game extends AbstractScreen implements Context {
 
     @Override
     protected Image background() {
-        return Resources.loadImage("/background.jpg");
+        return Resources.loadImage("/res/background.jpg");
     }
 
     @Override
     protected Image icon() {
-        return Resources.loadImage("/app_icon.png");
+        return Resources.loadImage("/res/app_icon.png");
     }
 
     @Override
@@ -158,7 +155,7 @@ public class Game extends AbstractScreen implements Context {
 
         while(mRunning) {
             startTime = System.nanoTime();
-            updateGame(1);
+            updateGame();
             render();
             endTime = System.nanoTime();
             deltaTime = endTime - startTime;
@@ -174,10 +171,12 @@ public class Game extends AbstractScreen implements Context {
 
     }
 
-    private void updateGame(final double delta) {
+     // TODO Remove warnings, post on github, post on website.
+
+    private void updateGame() {
         mModels.putAll(mModelsBuff);
         mModelsBuff.clear();
-        mModels.values().forEach(m -> m.update(delta));
+        mModels.values().forEach(m -> m.update(1));
         mModels.values().removeIf(m -> !m.isAlive() && !(m instanceof Player));
         getModel("_PLAYER_").ifPresent(m -> {
             if(!m.isAlive())
@@ -187,7 +186,7 @@ public class Game extends AbstractScreen implements Context {
 
     private void configureGraphics(Graphics g) {
         try {
-            InputStream inputStream = getClass().getResourceAsStream("/menu/fonts/ibm_plex_serif_bold.ttf");
+            InputStream inputStream = getClass().getResourceAsStream("/res/menu/fonts/ibm_plex_serif_bold.ttf");
             if(inputStream==null) return;
             Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             g.setFont(font.deriveFont(25f));
@@ -216,10 +215,9 @@ public class Game extends AbstractScreen implements Context {
 
         graphics.setColor(Color.BLUE);
         Point mousePos = MouseInfo.getPointerInfo().getLocation();
-        graphics.fillOval(mousePos.x-20, mousePos.y-20, 40, 40);
-
-        graphics.setColor(Color.WHITE);
-        graphics.drawString("Score: "+ Player.getScore(), 10, 40);
+        final int SIZE = 15;
+        graphics.drawLine(mousePos.x-SIZE, mousePos.y, mousePos.x+SIZE, mousePos.y); // horizontal
+        graphics.drawLine(mousePos.x, mousePos.y-SIZE, mousePos.x, mousePos.y+SIZE); // vertical
 
         graphics.dispose();
     }

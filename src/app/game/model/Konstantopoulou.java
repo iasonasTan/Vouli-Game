@@ -4,19 +4,20 @@ import app.game.lib.Context;
 import app.game.lib.model.Model;
 import app.game.lib.model.ThrowableModel;
 import app.lib.io.Resources;
-import app.lib.gui.Vector2;
+import app.lib.game.Vector2;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
 
 public class Konstantopoulou extends AbstractEnemy {
+
     public Konstantopoulou(Context context) {
         super(context);
     }
 
     @Override
-    protected String attackSprite() {
-        return "/game/konstantopoulou/model_attack.png";
+    protected Image attackSprite() {
+        return Resources.loadImage("/res/game/konstantopoulou/model_attack.png");
     }
 
     @Override
@@ -30,28 +31,23 @@ public class Konstantopoulou extends AbstractEnemy {
     }
 
     @Override
-    protected void beforeKilled() {
-        super.beforeKilled();
-    }
-
-    @Override
     protected Clip attackSound() {
-        return Resources.loadClip("/game/konstantopoulou/ti_eipate.wav");
+        return Resources.loadClip("/res/game/konstantopoulou/ti_eipate.wav");
     }
 
     @Override
     protected Clip killSound() {
-        return Resources.loadClip("/game/konstantopoulou/tha_ti_skotoso.wav");
+        return Resources.loadClip("/res/game/konstantopoulou/tha_ti_skotoso.wav");
     }
 
     @Override
     protected Image killSprite() {
-        return Resources.loadImage("/game/konstantopoulou/dead_model.png");
+        return Resources.loadImage("/res/game/konstantopoulou/dead_model.png");
     }
 
     @Override
     protected Image getSprite() {
-        return Resources.loadImage("/game/konstantopoulou/model.png");
+        return Resources.loadImage("/res/game/konstantopoulou/model.png");
     }
 
     public static final class Zoe extends ThrowableModel {
@@ -61,7 +57,7 @@ public class Konstantopoulou extends AbstractEnemy {
 
         @Override
         protected Image getSprite() {
-            return Resources.loadImage("/game/konstantopoulou/throwable.png");
+            return Resources.loadImage("/res/game/konstantopoulou/throwable.png");
         }
     }
 }

@@ -1,7 +1,6 @@
 package app.menu;
 
 import app.lib.io.Configuration;
-import app.Main;
 import app.lib.gui.UI;
 import app.lib.gui.layout.VerticalFlowLayout;
 import app.lib.io.InputProperties;
@@ -30,24 +29,20 @@ class Settings extends AbstractScreen {
     }
 
     private void loadSettings() {
-        try (InputStream inputStream = Configuration.getConfigInputStream("settings.properties", true)) {
-            InputProperties properties = new InputProperties(inputStream);
-            mSysFullScrCheckBox.setSelected(properties.getBoolean("sys_full_scr", true));
-            mEnableMusicCheckBox.setSelected(properties.getBoolean("enable_music", true));
-            mEnableSFXCheckBox.setSelected(properties.getBoolean("enable_sfx", true));
-        } catch (IOException e) {
-            UI.showException(e);
-            throw new RuntimeException(e);
-        }
+        InputProperties properties = new InputProperties();
+        Configuration.loadProperties("settings.properties", properties);
+        mSysFullScrCheckBox.setSelected(properties.getBoolean("sys_full_scr", true));
+        mEnableMusicCheckBox.setSelected(properties.getBoolean("enable_music", true));
+        mEnableSFXCheckBox.setSelected(properties.getBoolean("enable_sfx", true));
     }
 
     private void initSwing() {
-        InputStream is = Menu.class.getResourceAsStream("/menu/styles/settings_style.style");
+        InputStream is = Menu.class.getResourceAsStream("/res/menu/styles/settings_style.style");
         SimpleStyler styler = new SimpleStyler(SimpleStyleLoader.instance.loadStyle(is));
 
         setLayout(new GridBagLayout());
 
-        JTextField warningField = UI.newComponentBuilder(new JTextField("Changes to some settings will take \neffect after restarting the application."))
+        JTextField warningField = UI.newComponentBuilder(new JTextField("Changes will take effect after restarting the application."))
                 .setEditable(false)
                 .setBackground(Color.RED)
                 .setForeground(Color.WHITE)
@@ -66,35 +61,7 @@ class Settings extends AbstractScreen {
                 .build();
 
         mExitButton.addActionListener(new OnExitListener());
-        mShowInstructionsButton.addActionListener(OnShowInstructionsListener.fromResource("/instructions.txt"));
-    }
-
-    private static final class OnShowInstructionsListener implements ActionListener {
-        private final String mInstructions;
-
-        private OnShowInstructionsListener(String instructions) {
-            this.mInstructions = instructions;
-        }
-
-        public static OnShowInstructionsListener fromResource(String path) {
-            // noinspection all : nullpointerexception handled
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(Settings.class.getResourceAsStream(path)))) {
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line).append('\n');
-                }
-                return new OnShowInstructionsListener(sb.toString());
-            } catch (IOException | NullPointerException e) {
-                UI.showException(e);
-                return new OnShowInstructionsListener("Failed to load instructions.");
-            }
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(null, mInstructions);
-        }
+        mShowInstructionsButton.addActionListener(ae -> new HowToPlay().setVisible());
     }
 
     private final class OnExitListener implements ActionListener {
@@ -109,7 +76,7 @@ class Settings extends AbstractScreen {
                 UI.showException(e);
                 throw new RuntimeException(e);
             }
-            Main.initUtils();
+            //Main.initUtils();
             new Menu().setVisible();
         }
     }
@@ -121,11 +88,11 @@ class Settings extends AbstractScreen {
 
     @Override
     protected Image background() {
-        return Resources.loadImage("/background.jpg");
+        return Resources.loadImage("/res/background.jpg");
     }
 
     @Override
     protected Image icon() {
-        return Resources.loadImage("/app_icon.png");
+        return Resources.loadImage("/res/app_icon.png");
     }
 }

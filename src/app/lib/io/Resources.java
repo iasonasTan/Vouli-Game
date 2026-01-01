@@ -4,31 +4,42 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.function.Supplier;
 
 public final class Resources {
     private static BufferedImage mCannotLoadImage;
 
-    @SuppressWarnings("all")
     public static void init() {
         try {
-            mCannotLoadImage = ImageIO.read(Resources.class.getResourceAsStream("cannotloadimage.png"));
+            InputStream inputStream = Resources.class.getResourceAsStream("cannotloadimage.png");
+            if(inputStream!=null)
+                mCannotLoadImage = ImageIO.read(inputStream);
         } catch (IOException e) {
             // ignore
         }
     }
 
     public static BufferedImage loadImage(String path) {
+        return loadImage(path, Resources.class);
+    }
+
+    public static BufferedImage loadImage(final String path, Class<?> clazz) {
+        final Supplier<BufferedImage> errorHandler = () -> {
+            System.out.println("Cannot load image "+path);
+            return mCannotLoadImage;
+        };
         try {
-            URL rsrcUrl = Resources.class.getResource(path);
+            URL rsrcUrl = clazz.getResource(path);
             if (rsrcUrl == null) {
-                System.err.println("Failed to get image " + path);
-                return mCannotLoadImage;
+                System.err.println("Failed to load image '"+path+"'");
+                return errorHandler.get();
             }
             BufferedImage image = ImageIO.read(rsrcUrl);
-            return image == null ? mCannotLoadImage : image;
+            return image == null ? errorHandler.get() : image;
         } catch (IOException e) {
-            return mCannotLoadImage;
+            return errorHandler.get();
         }
     }
 

@@ -1,6 +1,5 @@
-package app.lib.gui;
+package app.lib.game;
 
-@SuppressWarnings("unused")
 public class Hitbox {
     public final Vector2 pos;
     public final Size size;

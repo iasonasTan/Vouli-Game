@@ -17,7 +17,7 @@ public final class GameOverScreen extends AbstractScreen {
     private final JLabel mTitleLabel;
 
     {
-        Style style = SimpleStyleLoader.instance.loadStyle("/menu/styles/menu_style.style");
+        Style style = SimpleStyleLoader.instance.loadStyle("/res/menu/styles/menu_style.style");
         ComponentFactory factory = new ComponentFactory(new SimpleStyler(style));
         mExitButton = factory.newComponent(JButton.class, "Menu");
         mReplayButton = factory.newComponent(JButton.class, "Play Again");
@@ -28,7 +28,6 @@ public final class GameOverScreen extends AbstractScreen {
         initSwing();
     }
 
-    @SuppressWarnings("all") // : intellij tells lies
     private void initSwing() {
         setLayout(new GridBagLayout());
         addComponentBuilder(new JPanel(), new GridBagConstraints())
@@ -53,11 +52,11 @@ public final class GameOverScreen extends AbstractScreen {
 
     @Override
     protected Image background() {
-        return Resources.loadImage("/background.jpg");
+        return Resources.loadImage("/res/background.jpg");
     }
 
     @Override
     protected Image icon() {
-        return Resources.loadImage("/app_icon.png");
+        return Resources.loadImage("/res/app_icon.png");
     }
 }

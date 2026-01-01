@@ -1,6 +1,6 @@
 package app.game.lib.model;
 
-import app.lib.gui.Vector2;
+import app.lib.game.Vector2;
 import app.lib.media.Sound;
 import app.game.lib.Context;
 
@@ -11,9 +11,14 @@ public abstract class DamageableModel extends AbstractModel {
     private int mHp;
     private long mKillTime = -1;
 
+    private final Image mOnKilledSprite;
+    private final Clip mOnKilledClip;
+
     public DamageableModel(Context context, int hp) {
         super(context);
         mHp = hp;
+        mOnKilledSprite = killSprite();
+        mOnKilledClip = killSound();
     }
 
     protected abstract Clip killSound();
@@ -47,8 +52,8 @@ public abstract class DamageableModel extends AbstractModel {
         if(mHp<=0 && mKillTime == -1) {
         	final long KILL_AFTER = 2000L;
             mKillTime = System.currentTimeMillis()+KILL_AFTER;
-            useSprite(killSprite(), KILL_AFTER);
-            Sound.playSFX(killSound()); // TODO bad logic. store it in field.
+            useSprite(mOnKilledSprite, KILL_AFTER);
+            Sound.playSFX(mOnKilledClip);
             beforeKilled();
         }
 
