@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir dist
           move Vouli-Game.jar dist/
-          jpackage --input dist --name Vouli-Game --main-jar Vouli-Game.jar --main-class app.Main --type exe --dest output --win-menu --win-shortcut --icon resources/app_icon.ico
+          jpackage --input dist --name Vouli-Game --main-jar Vouli-Game.jar --main-class app.Main --type exe --dest output --win-menu --win-shortcut --icon resources/res/app_icon.ico
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4

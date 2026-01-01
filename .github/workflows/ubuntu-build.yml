@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir dist
           mv Vouli-Game.jar dist/
-          jpackage --input dist --name Vouli-Game --main-jar Vouli-Game.jar --type deb --dest output --icon resources/app_icon.png
+          jpackage --input dist --name Vouli-Game --main-jar Vouli-Game.jar --type deb --dest output --icon resources/res/app_icon.png
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4
